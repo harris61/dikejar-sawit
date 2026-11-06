@@ -18,7 +18,7 @@ Cara memberi masukan: tandai ID dengan ✅ pakai / ❌ buang / ✏️ ubah, atau
 | Nada | Satire gelap + horor atmosferik. Horor penuh hanya di ISPU "Berbahaya" |
 | Pengejar | Api, asap, buldoser |
 | Platform | Web (HTML + Canvas), mobile-first, swipe 4 arah, keyboard, haptic, Web Audio |
-| Batasan | Tanpa gore. Tanpa nama perusahaan atau orang nyata. Perusahaan fiktif: **PT Hijau Lestari Abadi Tbk (HLA)** |
+| Batasan | Tanpa gore. Tanpa nama perusahaan atau orang nyata. Perusahaan fiktif: **PT Sawit Juga Pohon (SJP)** |
 | Fakta nyata di game over | **Ya**, dengan sumber (wajib diverifikasi ulang sebelum rilis) |
 | Ditunda | Mode Pelaku ("Direktur"), versi 2 |
 | Arah visual | **Kabut** (v0.2): siluet datar berlapis, asap abu-kuning, satu warna merah. Moodboard di `design/` |
@@ -29,7 +29,7 @@ Cara memberi masukan: tandai ID dengan ✅ pakai / ❌ buang / ✏️ ubah, atau
 | ID | Elemen | Status |
 |---|---|---|
 | A1 | Pemain = warga yang kabur dari api, asap, dan ekspansi lahan | ✅ |
-| A2 | PT Hijau Lestari Abadi Tbk: nama "hijau" untuk perusak hutan | ✅ |
+| A2 | PT Sawit Juga Pohon: nama yang membela sawit sebagai "pohon" | ✅ |
 | A3 | Judul *Dikejar Sawit* | ✅ |
 | A4 | Slogan perusahaan: *"Menanam Masa Depan"* | ✅ |
 | A5 | Logo daun hijau yang ujungnya terbakar | ⏳ |
@@ -59,8 +59,8 @@ Cara memberi masukan: tandai ID dengan ✅ pakai / ❌ buang / ✏️ ubah, atau
 |---|---|---|---|
 | D1 | Kayu tebangan | Lompat (kalau tertabrak, tersandung) | ✅ |
 | D2 | Spanduk "ZERO BURNING ✓" melintang | Merunduk | ✅ |
-| D3 | Buldoser PT HLA | Pindah jalur (mematikan) | ✅ |
-| D3b | Ekskavator PT HLA yang sedang menggali | Pindah jalur (mematikan) | ✅ |
+| D3 | Buldoser PT SJP | Pindah jalur (mematikan) | ✅ |
+| D3b | Ekskavator PT SJP yang sedang menggali | Pindah jalur (mematikan) | ✅ |
 | D4 | Gambut terbakar dari dalam (retakan menyala, berasap) | Lompat (mematikan) | ✅ |
 | D5 | Kanal pengering yang dibuat perusahaan | Lompat | ⏳ |
 | D6 | Pagar konsesi baru di atas tanah adat | ⏳ | ⏳ |
@@ -78,7 +78,7 @@ Cara memberi masukan: tandai ID dengan ✅ pakai / ❌ buang / ✏️ ubah, atau
 | ID | Elemen | Status |
 |---|---|---|
 | F1 | Ticker berita dengan nada makin absurd per level ISPU | ✅ |
-| F2 | Notifikasi ala HP: "Saham HLA naik 3%" | ✅ |
+| F2 | Notifikasi ala HP: "Saham SJP naik 3%" | ✅ |
 | F3 | Kutipan pejabat fiktif di loading screen | ⏳ |
 | F4 | Penghitung hotspot satelit yang tidak pernah turun | ✅ |
 | F5 | Tombol "Lari Lagi", tanpa tombol berhenti | ✅ |
@@ -89,7 +89,7 @@ Cara memberi masukan: tandai ID dengan ✅ pakai / ❌ buang / ✏️ ubah, atau
 | ID | Elemen | Status |
 |---|---|---|
 | G1 | Teks penyebab kematian (ISPA, buldoser, gambut, spanduk, api) | ✅ |
-| G2 | "PT HLA menyampaikan duka cita mendalam dan berkomitmen pada zero burning." | ✅ |
+| G2 | "PT SJP menyampaikan duka cita mendalam dan berkomitmen pada zero burning." | ✅ |
 | G3 | Statistik: Jarak · Bibit · Kemarau dilalui · **Tersangka: 0** | ✅ |
 | G4 | Satu fakta nyata + sumber | ✅ (verifikasi ulang) |
 | G5 | Kamera berbalik ke siluet yang tersisa di asap | ⏳ |
@@ -150,11 +150,13 @@ Cara memberi masukan: tandai ID dengan ✅ pakai / ❌ buang / ✏️ ubah, atau
 
 ## Fakta untuk layar game over (G4)
 
-> ⚠️ Angka di bawah ini dikutip dari ingatan atas laporan publik. **Wajib dicek ulang ke sumber aslinya sebelum rilis.**
+> Data karhutla 2026, dari laporan media (dicek November 2026). Angka antarsumber dan antartanggal bisa berbeda, jadi **cek ulang ke SiPongi, Kemenkes, Kemenhub, dan Bareskrim sebelum rilis.**
 
-1. Karhutla 2015 menghanguskan sekitar 2,6 juta hektare lahan. (Bank Dunia, 2016)
-2. Kerugian karhutla 2015 diperkirakan US$16,1 miliar, sekitar Rp221 triliun. (Bank Dunia, 2016)
-3. Lebih dari 500 ribu orang menderita ISPA selama karhutla 2015. (BNPB, 2015)
-4. Sekitar 1,6 juta hektare lahan terbakar pada 2019. (KLHK / SiPongi, 2019)
-5. September 2019, langit Muaro Jambi berwarna merah karena asap karhutla. (BMKG, 2019)
-6. Gambut yang dikeringkan bisa terbakar di bawah permukaan dan sangat sulit dipadamkan. (BRGM)
+1. Januari–Agustus 2026: 202.010 ha terbakar, naik 69% dari periode yang sama tahun sebelumnya. (SiPongi KLHK)
+2. 288.540 kasus ISPA di 63 kab/kota per 14 Okt 2026, termasuk 64.913 balita. (Kemenkes)
+3. 10,67 juta warga terdampak asap. (Kemenkes)
+4. Kerugian karhutla 2026 diperkirakan bisa mencapai Rp123,1 triliun. (Betahita)
+5. 2.775 penerbangan terdampak per 21 Okt 2026, termasuk pembatalan di Malaysia. (Kemenhub)
+6. 20 korporasi dan 245 orang ditetapkan tersangka per 29 Okt 2026. (Bareskrim)
+7. Kalimantan Barat jadi provinsi dengan lahan terbakar terluas: 38.310 ha. (SiPongi KLHK)
+8. Pembanding: karhutla 2015 menghanguskan sekitar 2,6 juta ha. (Bank Dunia, 2016)
