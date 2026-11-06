@@ -89,7 +89,7 @@ canvas{display:block;width:100%;height:100%}
 .fact{font:400 12.5px/1.45 var(--f-lab);color:#d9d5c7;background:rgba(196,193,176,.06);padding:12px 14px}
 .fact small{display:block;font-size:9.5px;opacity:.6;margin-top:5px;letter-spacing:.08em}
 .o-end{display:flex;flex-direction:column;gap:10px;align-items:stretch;margin-top:auto}
-#siaga{font:600 8px/1.4 var(--f-lab);letter-spacing:.26em;text-transform:uppercase;color:var(--red);opacity:0;transition:opacity 1s}
+#siaga{font:600 8px/1.4 var(--f-lab);letter-spacing:.26em;text-transform:uppercase;color:#fff;text-align:center;opacity:0;transition:opacity 1s}
 #btnAgain{color:#ece8dc;width:100%;padding-block:16px}
 #best{font:400 10.5px/1 var(--f-lab);letter-spacing:.06em;opacity:.5;text-align:center}
 @media (max-height:700px){#over{gap:16px;padding-top:26px}#cause{font-size:28px}.o-zero b{font-size:44px}.fact{font-size:11.5px;padding:9px 12px}}
@@ -144,7 +144,7 @@ canvas{display:block;width:100%;height:100%}
   </div>
   <div class="fact" id="fact"></div>
   <div class="o-end">
-   <div id="siaga">Status siaga darurat karhutla ditetapkan</div>
+   <div id="siaga">Status siaga darurat karhutla<br><span style="color:var(--red)">belum</span> ditetapkan</div>
    <button class="btn" id="btnAgain">Lari lagi</button>
    <div id="best"></div>
   </div>
