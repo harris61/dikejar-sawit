@@ -325,7 +325,7 @@ function act(dir){
  if(dir==='L')S.lane=Math.max(-1,S.lane-1);
  else if(dir==='R')S.lane=Math.min(1,S.lane+1);
  else if(dir==='U'){if(S.py<=0.001){S.vy=8.2;S.slide=0;tone(300,.08,.05,'sine',0,520);}}
- else if(dir==='D'){if(S.py>0)S.vy=-15;S.slide=.65;burst('lowpass',600,1,.12,.08);}
+ else if(dir==='D'){if(S.py>0)S.vy=-15;S.slide=SLIDE_DUR;burst('lowpass',600,1,.12,.08);}
 }
 let tx=0,ty=0,handled=false;
 cv.addEventListener('touchstart',e=>{const t=e.changedTouches[0];tx=t.clientX;ty=t.clientY;handled=false;e.preventDefault();},{passive:false});
@@ -494,9 +494,9 @@ const STAND={hipY:-.5,shY:-.87,hd:[0,-1.03],L:{k:[-.06,-.26],f:[-.07,0]},R:{k:[.
 // ---------- Tokoh utama: kerangka 3D sederhana, diproyeksikan kamera game ----------
 const BK=.64; // skala tubuh (meter -> unit dunia)
 const v3={add:(a,b)=>[a[0]+b[0],a[1]+b[1],a[2]+b[2]],mul:(a,k)=>[a[0]*k,a[1]*k,a[2]*k],lerp:(a,b,k)=>[a[0]+(b[0]-a[0])*k,a[1]+(b[1]-a[1])*k,a[2]+(b[2]-a[2])*k]};
-function bodyPose(){
+function runPose(){
  const f=S.ispu/500,ph=S.ph,t=S.t,st=S.t-S.lastStumble,dying=mode==='dying'||mode==='over';
- const slide=S.slide>0&&!dying,air=S.py>0.01&&!dying;
+ const slide=false,air=S.py>0.01&&!dying;
  const stum=st<.7?Math.sin(clamp(st/.7)*Math.PI):0;              // terhuyung setelah tersandung
  const cough=S.coughT>0?Math.sin(clamp(1-S.coughT/.7)*Math.PI):0; // batuk: membungkuk
  const fat=clamp((f-.15)/.7);                                     // kelelahan karena asap
@@ -541,12 +541,47 @@ function bodyPose(){
  }
  return{legs,P,chest,neck,shL,shR,head,arms,look,lean,fat};
 }
+// Sliding ala endless runner: badan rebah ke belakang, kaki depan lurus, kaki belakang terlipat,
+// satu tangan menahan tanah. Pose dicampur halus dengan pose lari saat masuk dan keluar.
+const SLIDE_DUR=.65;
+function slidePose(R){
+ const y=.2,P=[0,y,0],lean=-.95,up=[0,Math.cos(lean),Math.sin(lean)],j=.012*Math.sin(S.t*40);
+ const chest=v3.add(P,v3.mul(up,.5)),neck=v3.add(chest,v3.mul(up,.07));
+ const shL=v3.add(chest,[-.23,0,0]),shR=v3.add(chest,[.23,0,0]),hl=lean+.75;
+ const head=v3.add(neck,[0,Math.cos(hl)*.15,Math.sin(hl)*.15]);
+ const legs=[
+  {s:-1,hip:[-.12,y,0],knee:[-.13,.11+j,.42],ank:[-.13,.07+j,.84],toe:[-.13,.19+j,.9]},   // kaki depan lurus
+  {s:1,hip:[.12,y,0],knee:[.17,.27,.32],ank:[.17,.06,.08],toe:[.17,.03,.21]},             // kaki belakang terlipat
+ ];
+ const arms=[
+  {s:-1,sh:shL,elb:v3.add(shL,[-.1,-.2,-.06]),hand:[shL[0]-.16,.03,shL[2]-.12]},          // tangan menahan tanah
+  {s:1,sh:shR,elb:v3.add(shR,[.13,.1,.16]),hand:v3.add(shR,[.2,.24,.3])},                 // tangan menjaga keseimbangan
+ ];
+ // putar badan ~35° menyamping agar kaki yang meluncur terlihat dari kamera belakang
+ const yw=.62,cy=Math.cos(yw),sy=Math.sin(yw),Y=p=>[p[0]*cy+p[2]*sy,p[1],-p[0]*sy+p[2]*cy];
+ return{legs:legs.map(l=>({s:l.s,hip:Y(l.hip),knee:Y(l.knee),ank:Y(l.ank),toe:Y(l.toe)})),P:Y(P),chest:Y(chest),neck:Y(neck),shL:Y(shL),shR:Y(shR),head:Y(head),
+  arms:arms.map(a=>({s:a.s,sh:Y(a.sh),elb:Y(a.elb),hand:Y(a.hand)})),look:0,lean,fat:R.fat};
+}
+function bodyPose(){
+ const R=runPose(),dying=mode==='dying'||mode==='over';
+ if(dying||S.slide<=0||S.py>0.01)return R;
+ const e=SLIDE_DUR-S.slide,k=clamp(Math.min(e/.09,S.slide/.13)),w=k*k*(3-2*k);
+ if(w<=0)return R;
+ const Q=slidePose(R),L=(a,b)=>v3.lerp(a,b,w);
+ return{legs:R.legs.map((l,i)=>({s:l.s,hip:L(l.hip,Q.legs[i].hip),knee:L(l.knee,Q.legs[i].knee),ank:L(l.ank,Q.legs[i].ank),toe:L(l.toe,Q.legs[i].toe)})),
+  P:L(R.P,Q.P),chest:L(R.chest,Q.chest),neck:L(R.neck,Q.neck),shL:L(R.shL,Q.shL),shR:L(R.shR,Q.shR),head:L(R.head,Q.head),
+  arms:R.arms.map((a,i)=>({s:a.s,sh:L(a.sh,Q.arms[i].sh),elb:L(a.elb,Q.arms[i].elb),hand:L(a.hand,Q.arms[i].hand)})),
+  look:R.look*(1-w),lean:R.lean+(Q.lean-R.lean)*w,fat:R.fat};
+}
 function drawRunner(){
  const dying=mode==='dying'||mode==='over',B=bodyPose(),rx=(dying?S.dieLane:S.px)*LW;
  const d=dying?clamp(S.dieT/1.0):0,a=d*d*1.5,ca=Math.cos(a),sa=Math.sin(a);
  const W3=p=>{let x=p[0]*BK,y=p[1]*BK,z=p[2]*BK;if(a){const y2=y*ca-z*sa,z2=y*sa+z*ca;y=y2;z=z2;}return proj(rx+x,y+S.py*.78-d*.05,z);};
  const g=proj(rx,0,0);
  ctx.fillStyle='rgba(13,12,10,.32)';ctx.beginPath();ctx.ellipse(g.x,g.y,.24*g.s*(1-clamp(S.py/3)*.5),.045*g.s,0,0,7);ctx.fill();
+ if(!dying&&S.slide>0&&S.py<=0.01){const e=SLIDE_DUR-S.slide;ctx.fillStyle='rgba(196,186,160,.28)';
+  for(let i=0;i<7;i++){const q=(i*.37+e*2.6)%1,dz=-q*.9,dx=Math.sin(i*2.3)*.18*(.4+q),pp=proj(rx+dx,.05+q*.12,dz);
+   ctx.globalAlpha=(1-q)*.9;ctx.beginPath();ctx.ellipse(pp.x,pp.y,(.05+q*.16)*pp.s,(.03+q*.08)*pp.s,0,0,7);ctx.fill();}ctx.globalAlpha=1;}
  const sc=g.s*BK,shapes=[];
  const seg=(p,q,ra,rb)=>shapes.push(['c',W3(p),W3(q),ra*sc,rb*sc]);
  const dot=(p,r)=>shapes.push(['o',W3(p),r*sc]);
