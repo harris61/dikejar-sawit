@@ -21,6 +21,7 @@ Cara memberi masukan: tandai ID dengan ✅ pakai / ❌ buang / ✏️ ubah, atau
 | Batasan | Tanpa gore. Tanpa nama perusahaan atau orang nyata. Perusahaan fiktif: **PT Hijau Lestari Abadi Tbk (HLA)** |
 | Fakta nyata di game over | **Ya**, dengan sumber (wajib diverifikasi ulang sebelum rilis) |
 | Ditunda | Mode Pelaku ("Direktur"), versi 2 |
+| Arah visual | **Kabut** (v0.2): siluet datar berlapis, asap abu-kuning, satu warna merah. Moodboard di `design/` |
 
 ---
 
