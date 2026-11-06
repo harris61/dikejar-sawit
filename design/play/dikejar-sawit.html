@@ -60,20 +60,31 @@ canvas{display:block;width:100%;height:100%}
 #pause{justify-content:center;gap:14px;background:rgba(13,12,10,.72);color:var(--pale)}
 #pause h2{margin:0;font:100 46px/1 var(--f-num);letter-spacing:.4em;padding-left:.4em}
 #pause p{margin:0 0 10px;font:italic 400 16px/1 var(--f-sub);opacity:.75}
-#over{justify-content:center;gap:16px;background:var(--ink);color:var(--haze);opacity:0;transition:opacity 1.2s}
+#over{align-items:stretch;text-align:left;justify-content:flex-start;gap:22px;padding:calc(env(safe-area-inset-top) + 34px) 22px calc(env(safe-area-inset-bottom) + 22px);background:var(--ink);color:var(--haze);opacity:0;transition:opacity 1.2s}
 #over.show{opacity:1}
-#over .sun{width:24px;height:24px;border-radius:50%;background:var(--red);box-shadow:0 0 0 8px rgba(168,35,26,.16),0 0 0 17px rgba(168,35,26,.07);margin-bottom:6px}
-#cause{font:300 26px/1.15 var(--f-num);letter-spacing:.14em;text-transform:uppercase;color:#ece8dc;margin:0;max-width:16ch}
-#cause small{display:block;font:italic 400 14px/1.35 var(--f-sub);letter-spacing:0;text-transform:none;opacity:.7;margin-top:8px}
-#over .pr{font:italic 400 14px/1.4 var(--f-sub);max-width:26ch;margin:0;opacity:.75}
-.stats{display:grid;grid-template-columns:auto auto;gap:5px 26px;font:400 12px/1.3 var(--f-lab);letter-spacing:.06em;text-align:left;font-variant-numeric:tabular-nums}
-.stats b{font-weight:600;text-align:right;color:#ece8dc}
-.zero{font:800 13px/1 var(--f-num);letter-spacing:.5em;color:var(--red);padding-left:.5em}
-.fact{font:400 12px/1.5 var(--f-lab);max-width:30ch;opacity:.8;border-top:1px solid rgba(196,193,176,.25);padding-top:12px}
-.fact small{display:block;font-size:10px;opacity:.65;margin-top:4px;letter-spacing:.06em}
-#siaga{font:600 9px/1.4 var(--f-lab);letter-spacing:.24em;text-transform:uppercase;color:var(--red);opacity:0;transition:opacity 1s;max-width:30ch}
-#best{font:400 11px/1 var(--f-lab);letter-spacing:.08em;opacity:.55}
-#btnAgain{color:#ece8dc;margin-top:4px}
+.o-eye{display:flex;align-items:center;gap:10px;font:600 8px/1 var(--f-lab);letter-spacing:.34em;text-transform:uppercase;opacity:.8}
+.o-eye span:last-child{margin-left:auto}
+.o-sun{width:10px;height:10px;border-radius:50%;background:var(--red);box-shadow:0 0 0 4px rgba(168,35,26,.18);flex:none}
+#cause{font:300 34px/1 var(--f-num);letter-spacing:.06em;text-transform:uppercase;color:#ece8dc;margin:16px 0 0;text-wrap:balance}
+#cause small{display:block;font:italic 400 15px/1.3 var(--f-sub);letter-spacing:0;text-transform:none;color:var(--haze);opacity:.8;margin-top:10px}
+.o-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid rgba(196,193,176,.22);border-bottom:1px solid rgba(196,193,176,.22);padding:12px 0}
+.o-stats div{display:flex;flex-direction:column;gap:5px;padding-left:10px;border-left:1px solid rgba(196,193,176,.14)}
+.o-stats div:first-child{padding-left:0;border-left:0}
+.o-stats b{font:300 28px/1 var(--f-num);color:#ece8dc;font-variant-numeric:tabular-nums}
+.o-stats span{font:600 7.5px/1 var(--f-lab);letter-spacing:.16em;text-transform:uppercase;opacity:.65}
+.o-case{display:grid;grid-template-columns:auto minmax(0,1fr);gap:16px;align-items:center}
+.o-zero{display:flex;flex-direction:column;align-items:flex-start;gap:8px;color:var(--red)}
+.o-zero b{font:800 56px/.8 var(--f-num)}
+.o-zero span{font:600 7.5px/1.5 var(--f-lab);letter-spacing:.24em;text-transform:uppercase}
+.pr{font:italic 400 13.5px/1.35 var(--f-sub);margin:0;padding-left:14px;border-left:1px solid rgba(196,193,176,.22);opacity:.85}
+.pr small{display:block;font:600 7.5px/1 var(--f-lab);font-style:normal;letter-spacing:.24em;text-transform:uppercase;opacity:.6;margin-top:7px}
+.fact{font:400 12.5px/1.45 var(--f-lab);color:#d9d5c7;background:rgba(196,193,176,.06);padding:12px 14px}
+.fact small{display:block;font-size:9.5px;opacity:.6;margin-top:5px;letter-spacing:.08em}
+.o-end{display:flex;flex-direction:column;gap:10px;align-items:stretch;margin-top:auto}
+#siaga{font:600 8px/1.4 var(--f-lab);letter-spacing:.26em;text-transform:uppercase;color:var(--red);opacity:0;transition:opacity 1s}
+#btnAgain{color:#ece8dc;width:100%;padding-block:16px}
+#best{font:400 10.5px/1 var(--f-lab);letter-spacing:.06em;opacity:.5;text-align:center}
+@media (max-height:700px){#over{gap:16px;padding-top:26px}#cause{font-size:28px}.o-zero b{font-size:44px}.fact{font-size:11.5px;padding:9px 12px}}
 @media (prefers-reduced-motion:reduce){#hud.danger #ispuVal{animation:none}}
 </style>
 <div id="wrap"><div id="phone">
@@ -107,20 +118,26 @@ canvas{display:block;width:100%;height:100%}
  </div>
 
  <div id="over" class="ov hide">
-  <div class="sun"></div>
-  <h1 id="cause"></h1>
-  <p class="pr">PT Hijau Lestari Abadi Tbk menyampaikan duka cita mendalam dan tetap berkomitmen pada zero burning.</p>
-  <div class="stats">
-   <span>Jarak berlari</span><b id="sDist">0 m</b>
-   <span>Brondolan dipungut</span><b id="sBibit">0</b>
-   <span>Kemarau dilalui</span><b id="sYear">1</b>
-   <span>ISPU terakhir</span><b id="sIspu">0</b>
+  <div class="o-top">
+   <div class="o-eye"><i class="o-sun"></i><span>Laporan kejadian</span><span id="oYear">Kemarau 2026</span></div>
+   <h1 id="cause"></h1>
   </div>
-  <div class="zero">TERSANGKA 0</div>
+  <div class="o-stats">
+   <div><b id="sDist">0</b><span>meter</span></div>
+   <div><b id="sBibit">0</b><span>brondolan</span></div>
+   <div><b id="sYear">1</b><span>kemarau</span></div>
+   <div><b id="sIspu">0</b><span>ISPU</span></div>
+  </div>
+  <div class="o-case">
+   <div class="o-zero"><b>0</b><span>tersangka</span></div>
+   <p class="pr">“Kami menyampaikan duka cita mendalam dan tetap berkomitmen pada zero burning.”<small>PT HLA · penyelidikan dihentikan</small></p>
+  </div>
   <div class="fact" id="fact"></div>
-  <div id="siaga">Pemerintah daerah menetapkan status siaga darurat karhutla</div>
-  <div id="best"></div>
-  <button class="btn" id="btnAgain">Lari lagi</button>
+  <div class="o-end">
+   <div id="siaga">Status siaga darurat karhutla ditetapkan</div>
+   <button class="btn" id="btnAgain">Lari lagi</button>
+   <div id="best"></div>
+  </div>
  </div>
 </div></div>
 
@@ -335,7 +352,7 @@ function die(cause){
 function showOver(){
  mode='over';$('hud').classList.add('hide');
  const d=Math.floor(S.dist);$('cause').innerHTML=CAUSE[S.cause];
- $('sDist').textContent=d+' m';$('sBibit').textContent=S.bibit;$('sYear').textContent=S.years;$('sIspu').textContent=Math.round(S.ispu);
+ $('sDist').textContent=d;$('oYear').textContent='Kemarau '+S.year;$('sBibit').textContent=S.bibit;$('sYear').textContent=S.years;$('sIspu').textContent=Math.round(S.ispu);
  const f=pick(FACTS);$('fact').innerHTML=`${f[0]}<small>Sumber: ${f[1]}</small>`;
  let best=+(lsGet('dikejarSawitBest')||0);
  if(d>best){best=d;lsSet('dikejarSawitBest',d);$('best').textContent='Rekor baru: '+d+' m. Tidak ada yang merayakan.';}
