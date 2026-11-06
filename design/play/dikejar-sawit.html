@@ -41,6 +41,9 @@ canvas{display:block;width:100%;height:100%}
 /* Subtitle: suara korporat */
 #sub{position:absolute;left:22px;right:22px;bottom:calc(env(safe-area-inset-bottom) + 15%);text-align:center;pointer-events:none;z-index:6;opacity:0;transform:translateY(6px);transition:opacity .5s,transform .5s}
 #sub.show{opacity:1;transform:none}
+#sub.show.link{pointer-events:auto;cursor:pointer}
+#subText .src{display:block;margin-top:6px;font:600 9px/1 var(--f-lab);letter-spacing:.2em;text-transform:uppercase;text-decoration:underline;opacity:.75}
+.fact a{color:inherit;text-decoration:underline}
 #subWho{display:block;font:600 8px/1 var(--f-lab);letter-spacing:.38em;text-transform:uppercase;color:var(--pale);opacity:.7;margin-bottom:8px}
 #subText{font:italic 400 18px/1.28 var(--f-sub);color:#f3efe3;text-shadow:0 1px 3px rgba(0,0,0,.65),0 0 14px rgba(0,0,0,.35);text-wrap:balance}
 
@@ -108,7 +111,7 @@ canvas{display:block;width:100%;height:100%}
    <button class="btn" id="btnStart">Mulai lari</button>
    <div class="help">Geser ← → pindah jalur · ↑ lompat · ↓ merunduk<br><kbd>A</kbd> <kbd>D</kbd> jalur · <kbd>W</kbd> lompat · <kbd>S</kbd> merunduk · gunakan headphone</div>
   </div>
-  <div class="corp">Disponsori PT Hijau Lestari Abadi Tbk · Menanam Masa Depan</div>
+  <div class="corp">Disponsori PT Sawit Juga Pohon · Menanam Masa Depan</div>
  </div>
 
  <div id="pause" class="ov hide">
@@ -130,7 +133,7 @@ canvas{display:block;width:100%;height:100%}
   </div>
   <div class="o-case">
    <div class="o-zero"><b>0</b><span>tersangka</span></div>
-   <p class="pr">“Kami menyampaikan duka cita mendalam dan tetap berkomitmen pada zero burning.”<small>PT HLA · penyelidikan dihentikan</small></p>
+   <p class="pr">“Kami menyampaikan duka cita mendalam dan tetap berkomitmen pada zero burning.”<small>PT SJP · penyelidikan dihentikan</small></p>
   </div>
   <div class="fact" id="fact"></div>
   <div class="o-end">
@@ -181,35 +184,43 @@ const tierOf=v=>TIERS.findIndex(t=>v<=t.max);
 
 // ================= Teks satire =================
 const TICK=[
- ["Kualitas udara baik. Investasi perkebunan tumbuh positif.","Pemerintah: Indonesia siap menghadapi musim kemarau.","PT Hijau Lestari Abadi Tbk raih penghargaan Perusahaan Peduli Lingkungan.","Kami menanam masa depan.","Sawit adalah anugerah, kata seseorang di televisi."],
- ["Hotspot terpantau meningkat. Situasi masih terkendali.","Warga diimbau tidak panik dan tetap produktif.","Titik api berada di luar area konsesi kami.","Harga CPO naik 3%."],
- ["Sekolah diliburkan. Saham perkebunan naik 2%.","Sebagian asap ini kiriman dari tempat lain.","Sumber api tidak diketahui.","Rapat koordinasi penanganan karhutla dijadwalkan minggu depan."],
- ["Bandara ditutup. 40 penerbangan dibatalkan. Ekspor tetap lancar.","Polisi menetapkan 3 oknum warga sebagai tersangka.","Lahan kami terbakar dengan sendirinya.","Negara tetangga mengirim nota protes. Pemerintah: itu urusan dalam negeri."],
- ["Situasi terkendali.","Situasi terkendali.","PT Hijau Lestari Abadi Tbk meraih PROPER Hijau.","Warga diimbau tetap di dalam rumah. Rumah warga sedang terbakar.","Investasi sawit tumbuh 8%.","Situasi terkendali."],
+ [["202 ribu hektare lahan terbakar sepanjang Januari–Agustus 2026.", "SiPongi KLHK via Tempo", "https://www.tempo.co/lingkungan/hektare-terbakar-karhutla-2026-2283887"],["Luas karhutla 2026 naik 69% dibanding periode yang sama tahun lalu.", "SiPongi KLHK via Tempo", "https://www.tempo.co/lingkungan/hektare-terbakar-karhutla-2026-2283887"],"PT Sawit Juga Pohon raih penghargaan Perusahaan Peduli Lingkungan.",["Juli 2026: hampir 95 ribu hektare terbakar hanya dalam satu bulan.", "Katadata", "https://green.katadata.co.id/berita/6a951ce53f3c8/karhutla-2026-meluas-pakar-soroti-lemahnya-upaya-pencegahan"],"Sawit juga pohon. Secara teknis."],
+ [["Kalimantan Barat jadi provinsi dengan lahan terbakar terluas 2026: 38 ribu hektare.", "SiPongi KLHK via Tempo", "https://www.tempo.co/lingkungan/hektare-terbakar-karhutla-2026-2283887"],["Papua Selatan menyusul: 25,8 ribu hektare terbakar tahun ini.", "SiPongi KLHK via Tempo", "https://www.tempo.co/lingkungan/hektare-terbakar-karhutla-2026-2283887"],["21 Agustus 2026: 8.638 titik panas terpantau di Kalimantan.", "Kompas.id", "https://www.kompas.id/artikel/melihat-data-titik-panas-dan-karhutla-di-kalimantan-yang-kian-mengkhawatirkan"],"Titik api berada di luar area konsesi kami.","Warga diimbau tidak panik dan tetap produktif."],
+ [["Sekolah tatap muka TK–SMP dihentikan akibat asap.", "Catrawarta", "https://www.catrawarta.com/warta/kabut-asap-karhutla-masih-mengancam-kalimantan-sekolah-diliburkan-hingga-kasus-ispa-melonjak-di-kaltim-dan-kalbar/"],["Sekolah tatap muka diliburkan sejak 23 September 2026.", "Catrawarta", "https://www.catrawarta.com/warta/kabut-asap-karhutla-masih-mengancam-kalimantan-sekolah-diliburkan-hingga-kasus-ispa-melonjak-di-kaltim-dan-kalbar/"],["Kerugian karhutla 2026 diperkirakan bisa tembus Rp123 triliun.", "Betahita", "https://www.betahita.id/berita/12317/kerugian-akibat-karhutla-2026-bisa-tembus-rp123-t"],["1.813 penerbangan terdampak asap, 11 Agustus–12 Oktober 2026.", "Kemenhub via Okezone", "https://economy.okezone.com/read/2026/10/15/320/3247833/1-813-penerbangan-terdampak-karhutla-asap-mulai-ganggu-bandara-di-papua-dan-maluku"],"Rapat koordinasi penanganan karhutla dijadwalkan minggu depan."],
+ [["288.540 kasus ISPA di 63 kabupaten/kota per 14 Oktober 2026.", "Kemenkes via Kumparan", "https://kumparan.com/hajfi-maricar/karhutla-2026-jutaan-warga-terdampak-asap-ratusan-ribu-terserang-ispa-28Rdqw8Z6Md"],["64.913 di antaranya balita.", "Kemenkes via Kumparan", "https://kumparan.com/hajfi-maricar/karhutla-2026-jutaan-warga-terdampak-asap-ratusan-ribu-terserang-ispa-28Rdqw8Z6Md"],["10,67 juta warga terdampak asap karhutla 2026.", "Kemenkes via Kumparan", "https://kumparan.com/hajfi-maricar/karhutla-2026-jutaan-warga-terdampak-asap-ratusan-ribu-terserang-ispa-28Rdqw8Z6Md"],["Asap sampai KLIA. Penerbangan Kuala Lumpur–Singapura dibatalkan.", "CNBC Indonesia", "https://www.cnbcindonesia.com/news/20261014165320-7-776222/asap-karhutla-ri-kepung-bandara-malaysia-sampai-batalkan-penerbangan"],"Lahan kami terbakar dengan sendirinya.","Sumber api tidak diketahui."],
+ [["20 korporasi ditetapkan tersangka karhutla per 29 Oktober 2026.", "Bareskrim via Garuda TV", "https://garuda.tv/perusahaan-asal-malaysia-singapura-dan-korsel-jadi-tersangka-karhutla/"],["245 orang ditetapkan tersangka dari 287 laporan polisi.", "Bareskrim via Garuda TV", "https://garuda.tv/perusahaan-asal-malaysia-singapura-dan-korsel-jadi-tersangka-karhutla/"],["Per 21 Oktober: 2.775 penerbangan terdampak asap.", "Kemenhub via Citra Sumsel", "https://www.citrasumsel.com/nasional/603149620/kabut-asap-karhutla-ganggu-penerbangan-40-jadwal-pesawat-batal-hingga-25-oktober-2026"],"Situasi terkendali.","PT Sawit Juga Pohon meraih PROPER Hijau.","Situasi terkendali."],
 ];
-const TICK_WHO=[["Siaran berita","Pemerintah","Siaran berita","Juru bicara HLA","Televisi"],["Siaran berita","Pemerintah","Juru bicara HLA","Bursa"],["Siaran berita","Pejabat","Humas","Kalender"],["Siaran berita","Kepolisian","Juru bicara HLA","Diplomasi"],["Pemerintah","Pemerintah","Juru bicara HLA","Pemerintah","Bursa","Pemerintah"]];
+const TICK_WHO=[["SiPongi KLHK", "SiPongi KLHK", "Siaran berita", "Katadata", "Juru bicara SJP"], ["SiPongi KLHK", "SiPongi KLHK", "Sipongi Kemenhut", "Juru bicara SJP", "Pemerintah"], ["Pemkot Pontianak", "Pemprov Kaltim", "Siaran berita", "Kemenhub", "Kalender"], ["Kemenkes", "Kemenkes", "Kemenkes", "Diplomasi", "Juru bicara SJP", "Humas"], ["Bareskrim", "Bareskrim", "Kemenhub", "Pemerintah", "Bursa", "Pemerintah"]];
 const TOASTS=[
- ["Bursa","Saham HLA naik 3%."],["Kalender","Rakor karhutla dijadwalkan minggu depan."],
- ["Diplomasi","Negara tetangga mengirim nota protes."],["Iklan","Produk HLA bersertifikat Berkelanjutan™."],
- ["BPBD","Water bombing dikerahkan. Lokasi: area yang sudah padam."],["HLA Care","HLA telah menanam 12 pohon tahun ini."],
- ["Humas","Sumber api masih belum diketahui."],["Bursa","Dividen HLA dibagikan lebih awal."],
+ ["Bursa", "Saham SJP naik 3%."],
+ ["Kalender", "Rakor karhutla dijadwalkan minggu depan."],
+ ["Diplomasi", "Asap sampai Malaysia. Negara tetangga mengirim nota protes."],
+ ["Iklan", "Produk SJP bersertifikat Berkelanjutan™."],
+ ["BPBD", "Water bombing dikerahkan. Lokasi: area yang sudah padam."],
+ ["SJP Care", "SJP telah menanam 12 pohon tahun ini. Semuanya sawit."],
+ ["Kemenhub", "Penerbangan dibatalkan karena asap. Jadwal ekspor CPO tetap aman."],
+ ["Kemenkes", "Kasus ISPA 2026 tembus 288 ribu. Puskesmas penuh."],
+ ["Humas", "Sumber api masih belum diketahui."],
+ ["Bursa", "Dividen SJP dibagikan lebih awal."],
 ];
 const TIER_TOAST=["","Kualitas udara sedang. Tidak perlu khawatir.","Kualitas udara tidak sehat. Masker dibagikan terbatas.","Kualitas udara sangat tidak sehat. Situasi terkendali.","Kualitas udara berbahaya. Situasi terkendali."];
 const CAUSE={
  ispa:"Kamu meninggal karena ISPA",
- buldoser:"Kamu tertabrak buldoser HLA<small>Perusahaan menyebutnya “insiden di area konsesi”.</small>",
- ekskavator:"Kamu terlindas ekskavator HLA<small>Lahan sedang “disiapkan untuk ditanami”.</small>",
+ buldoser:"Kamu tertabrak buldoser SJP<small>Perusahaan menyebutnya “insiden di area konsesi”.</small>",
+ ekskavator:"Kamu terlindas ekskavator SJP<small>Lahan sedang “disiapkan untuk ditanami”.</small>",
  gambut:"Kamu terperosok ke gambut yang terbakar<small>Lahan terbakar dengan sendirinya.</small>",
  baliho:"Kamu menabrak spanduk zero burning",
  api:"Api menyusulmu<small>Sumber api tidak diketahui.</small>",
 };
 const FACTS=[
- ["Karhutla 2015 menghanguskan sekitar 2,6 juta hektare lahan di Indonesia.","Bank Dunia, 2016"],
- ["Kerugian karhutla 2015 diperkirakan mencapai US$16,1 miliar, sekitar Rp221 triliun.","Bank Dunia, 2016"],
- ["Lebih dari 500 ribu orang menderita ISPA selama karhutla 2015.","BNPB, 2015"],
- ["Sekitar 1,6 juta hektare lahan terbakar di Indonesia pada 2019.","KLHK / SiPongi, 2019"],
- ["September 2019, langit di Muaro Jambi berubah merah karena asap karhutla.","BMKG, 2019"],
- ["Gambut yang dikeringkan bisa terbakar di bawah permukaan dan sangat sulit dipadamkan.","BRGM"],
+ ["Sepanjang Januari–Agustus 2026, 202.010 hektare lahan terbakar di Indonesia, naik 69% dari periode yang sama tahun sebelumnya.", "SiPongi KLHK via Tempo", "https://www.tempo.co/lingkungan/hektare-terbakar-karhutla-2026-2283887"],
+ ["Hingga 14 Oktober 2026 tercatat 288.540 kasus ISPA di 63 kabupaten/kota, termasuk 64.913 balita.", "Kemenkes via Kumparan", "https://kumparan.com/hajfi-maricar/karhutla-2026-jutaan-warga-terdampak-asap-ratusan-ribu-terserang-ispa-28Rdqw8Z6Md"],
+ ["Sekitar 10,67 juta warga terdampak asap karhutla 2026.", "Kemenkes via Kumparan", "https://kumparan.com/hajfi-maricar/karhutla-2026-jutaan-warga-terdampak-asap-ratusan-ribu-terserang-ispa-28Rdqw8Z6Md"],
+ ["Kerugian akibat karhutla 2026 diperkirakan bisa mencapai Rp123,1 triliun.", "Betahita", "https://www.betahita.id/berita/12317/kerugian-akibat-karhutla-2026-bisa-tembus-rp123-t"],
+ ["Per 21 Oktober 2026, 2.775 penerbangan terdampak asap karhutla. Asapnya juga membatalkan penerbangan di Malaysia.", "Kemenhub via Citra Sumsel", "https://www.citrasumsel.com/nasional/603149620/kabut-asap-karhutla-ganggu-penerbangan-40-jadwal-pesawat-batal-hingga-25-oktober-2026"],
+ ["Per 29 Oktober 2026, Bareskrim menetapkan 20 korporasi dan 245 orang sebagai tersangka karhutla.", "Bareskrim via Garuda TV", "https://garuda.tv/perusahaan-asal-malaysia-singapura-dan-korsel-jadi-tersangka-karhutla/"],
+ ["Kalimantan Barat jadi provinsi dengan lahan terbakar terluas pada 2026: 38.310 hektare.", "SiPongi KLHK via Tempo", "https://www.tempo.co/lingkungan/hektare-terbakar-karhutla-2026-2283887"],
+ ["Sebagai pembanding: karhutla 2015 menghanguskan sekitar 2,6 juta hektare.", "Bank Dunia, 2015", "https://www.worldbank.org/en/news/feature/2015/12/01/indonesias-fire-and-haze-crisis"],
 ];
 
 // ================= Audio (Web Audio, tanpa file) =================
@@ -330,7 +341,7 @@ document.addEventListener('visibilitychange',()=>{if(document.hidden&&mode==='pl
 function start(){aInit();aMaster(.9,.05);reset();mode='play';
  $('start').classList.add('hide');$('over').classList.add('hide');$('over').classList.remove('show');$('pause').classList.add('hide');
  $('hud').classList.remove('hide');$('siaga').style.opacity=0;
- say('HLA Care','Selamat pagi dari PT Hijau Lestari Abadi Tbk. Menanam masa depan.');
+ say('SJP Care','Selamat pagi dari PT Sawit Juga Pohon. Menanam masa depan.');
 }
 function pause(){mode='paused';$('pause').classList.remove('hide');if(AU.ac)AU.ac.suspend();}
 function resume(){mode='play';$('pause').classList.add('hide');if(AU.ac)AU.ac.resume();last=performance.now();}
@@ -353,7 +364,7 @@ function showOver(){
  mode='over';$('hud').classList.add('hide');
  const d=Math.floor(S.dist);$('cause').innerHTML=CAUSE[S.cause];
  $('sDist').textContent=d;$('oYear').textContent='Kemarau '+S.year;$('sBibit').textContent=S.bibit;$('sYear').textContent=S.years;$('sIspu').textContent=Math.round(S.ispu);
- const f=pick(FACTS);$('fact').innerHTML=`${f[0]}<small>Sumber: ${f[1]}</small>`;
+ const f=pick(FACTS);$('fact').innerHTML=`${f[0]}<small>Sumber: <a href="${f[2]}" target="_blank" rel="noopener">${f[1]} ↗</a></small>`;
  let best=+(lsGet('dikejarSawitBest')||0);
  if(d>best){best=d;lsSet('dikejarSawitBest',d);$('best').textContent='Rekor baru: '+d+' m. Tidak ada yang merayakan.';}
  else $('best').textContent='Rekor jarak: '+best+' m';
@@ -363,7 +374,12 @@ function showOver(){
 
 // ================= Subtitle =================
 let subTimer=0;
-function say(who,text,dur=3.6){$('subWho').textContent=who;$('subText').textContent=text;$('sub').classList.add('show');subTimer=dur;}
+let subUrl=null;
+function say(who,text,dur=3.6){const it=Array.isArray(text)?text:null;subUrl=it?it[2]:null;
+ $('subWho').textContent=who;$('subText').textContent=it?it[0]:text;
+ if(it){const a=document.createElement('span');a.className='src';a.textContent=`Sumber: ${it[1]} ↗`;$('subText').append(a);dur+=1.5;}
+ $('sub').classList.toggle('link',!!it);$('sub').classList.add('show');subTimer=dur;}
+$('sub').addEventListener('click',()=>{if(!subUrl)return;if(mode==='play')pause();window.open(subUrl,'_blank','noopener');});
 
 // ================= Update =================
 const fireHeat=()=>clamp(.1+(S.ispu/500)*.3+S.fire*.6,0,1.5);
@@ -389,7 +405,7 @@ function update(dt){
   const z=o.wz-S.dist,inLane=Math.abs(S.px-o.lane)<.45;
   if(o.type==='bibit'||o.type==='masker'){
    if(!o.taken&&inLane&&Math.abs(z)<.7&&S.py<1.4){o.taken=true;
-    if(o.type==='bibit'){S.bibit++;tone(880+(S.bibit%5)*60,.12,.06);if(S.bibit%15===0)say('Satpam HLA','Memungut brondolan di area konsesi dapat dipidana.');}
+    if(o.type==='bibit'){S.bibit++;tone(880+(S.bibit%5)*60,.12,.06);if(S.bibit%15===0)say('Satpam SJP','Memungut brondolan di area konsesi dapat dipidana.');}
     else{S.ispu=Math.max(15,S.ispu-35);tone(660,.3,.1,'triangle',0,990);say('Bantuan','Masker bantuan diterima: 1 lembar untuk 1 keluarga.');}}
    continue;}
   if(o.hit||!inLane||!(z<.35&&z+o.len>-.35))continue;
@@ -584,7 +600,7 @@ function drawDozer(o,z){
   ctx.fillStyle=lite;ctx.beginPath();ctx.moveTo(-.64*s,-.8*s);ctx.quadraticCurveTo(0,-.73*s,.64*s,-.8*s);ctx.lineTo(.635*s,-.73*s);ctx.quadraticCurveTo(0,-.67*s,-.635*s,-.73*s);ctx.fill();
   ctx.globalAlpha=a*.5;for(const x of[-.42,-.14,.14,.42])box(x-.008,.24,.016,.44,s);ctx.globalAlpha=a;
   ctx.fillStyle='#0d0c0a';box(-.67,.16,1.34,.06,s);        // cutting edge
-  if(s>45){ctx.fillStyle=lite;ctx.font=`800 ${.13*s}px "Big Shoulders Display",sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('HLA',0,-.45*s);}
+  if(s>45){ctx.fillStyle=lite;ctx.font=`800 ${.13*s}px "Big Shoulders Display",sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('SJP',0,-.45*s);}
   ctx.fillStyle=col;for(let k=0;k<4;k++){const ph=(S.t*1.3+k/4+o.seed)%1;ctx.globalAlpha=a*(1-ph)*.45;ctx.beginPath();ctx.arc((.17+ph*.12)*s,-(1.55+ph*.9)*s,(.05+.13*ph)*s,0,7);ctx.fill();}
   ctx.globalAlpha=1;}
  workLights(s,[[-.42,.86],[.42,.86],[-.2,1.6],[.2,1.6]],o,z,true);
@@ -653,8 +669,9 @@ function drawBaliho(d,z){const p0=proj(d.x,0,z),p1=proj(d.x,3.1,z),p2=proj(d.x,1
  ctx.globalAlpha=Math.min(1,fv*1.6);ctx.fillStyle=rgb(mixc(C.pale,HZ,clamp(1-fv)*.5));ctx.fillRect(p0.x-w/2,p1.y,w,bh);
  ctx.fillStyle='#0d0c0a';ctx.beginPath();ctx.arc(p0.x-w*.3,p1.y+bh*.55,bh*.24,0,7);ctx.fill();
  ctx.strokeStyle=rgb(C.pale);ctx.lineWidth=Math.max(1,bh*.03);ctx.beginPath();ctx.arc(p0.x-w*.3,p1.y+bh*.58,bh*.12,.25,Math.PI-.25);ctx.stroke();
- if(bh>12){ctx.fillStyle='#0d0c0a';ctx.textAlign='left';ctx.textBaseline='alphabetic';ctx.font=`800 ${bh*.2}px "Big Shoulders Display",sans-serif`;ctx.fillText('BERSAMA',p0.x-w*.08,p1.y+bh*.42);ctx.fillText('MENJAGA HUTAN',p0.x-w*.08,p1.y+bh*.64);
-  ctx.font=`italic ${bh*.12}px "Instrument Serif",serif`;ctx.fillText('PT Hijau Lestari Abadi Tbk',p0.x-w*.08,p1.y+bh*.85);}
+ if(bh>12){ctx.fillStyle='#0d0c0a';ctx.textAlign='left';ctx.textBaseline='alphabetic';const mw=w*.55,fit=(txt,f,sz,y)=>{ctx.font=f(sz);const m=ctx.measureText(txt).width;if(m>mw)ctx.font=f(sz*mw/m);ctx.fillText(txt,p0.x-w*.08,y);},big=v=>`800 ${v}px "Big Shoulders Display",sans-serif`;
+  fit('BERSAMA',big,bh*.2,p1.y+bh*.42);fit('MENJAGA HUTAN',big,bh*.2,p1.y+bh*.64);
+  fit('PT Sawit Juga Pohon',v=>`italic ${v}px "Instrument Serif",serif`,bh*.12,p1.y+bh*.85);}
  ctx.globalAlpha=1;}
 function drawPerson(x,z,a){const b=proj(x,0,z);ctx.globalAlpha=a;fig(STAND,b.s,rgb(dcol(z)),b.x,b.y);ctx.globalAlpha=1;}
 
