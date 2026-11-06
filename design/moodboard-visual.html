@@ -1,0 +1,495 @@
+<title>Moodboard Dikejar Sawit</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Courier+Prime:wght@400;700&family=Silkscreen:wght@400;700&family=VT323&family=Special+Elite&family=Abril+Fatface&family=Big+Shoulders+Display:wght@300;500;900&family=Archivo:wght@400;600;800&family=Archivo+Narrow:wght@400;600&family=Nunito:wght@600;800;900&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: panel per arah, mockup ponsel di kiri dan spesifikasi di kanan; tumpuk satu kolom di layar sempit. Tampilan sengaja satu tema gelap. */
+:root{
+  --shell:#121110; --shell-2:#1c1a17; --ink:#ece7dc; --mute:#a39c8e; --line:#2e2b26; --hi:#f0a35e;
+  --f-shell:"Archivo",system-ui,sans-serif; --f-shell-d:"Big Shoulders Display","Archivo Narrow",sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--shell);color:var(--ink);font-family:var(--f-shell);font-size:15px;line-height:1.55}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header.top{padding-block:40px 24px;border-bottom:1px solid var(--line)}
+header.top .eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
+header.top h1{font-family:var(--f-shell-d);font-weight:900;font-size:clamp(40px,7vw,76px);line-height:.9;margin:8px 0 14px;text-transform:uppercase;text-wrap:balance}
+header.top p{max-width:66ch;color:var(--mute);margin:0 0 10px}
+nav.jump{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+nav.jump a{color:var(--ink);text-decoration:none;border:1px solid var(--line);padding:6px 12px;font-size:13px;font-weight:600}
+nav.jump a:hover,nav.jump a:focus-visible{border-color:var(--hi);outline:none}
+nav.jump b{color:var(--hi);margin-right:6px}
+
+section.dir{margin-block:28px;padding-block:28px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));background:var(--bg);color:var(--fg)}
+.dir .in{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:minmax(0,514px) minmax(0,1fr);gap:40px;align-items:start}
+@media (max-width:900px){.dir .in{grid-template-columns:minmax(0,1fr)}}
+.phones{display:flex;gap:14px;flex-wrap:wrap}
+.phone{position:relative;width:250px;max-width:100%;aspect-ratio:9/19.5;overflow:hidden;border-radius:22px;box-shadow:0 0 0 6px #0c0b0a,0 18px 40px rgba(0,0,0,.45);background:#000}
+.phone canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.phone .ov{position:absolute;inset:0;pointer-events:none}
+.cap{font-size:11px;letter-spacing:.1em;text-transform:uppercase;opacity:.65;margin-top:10px}
+.strip{display:flex;gap:8px;margin-top:16px}
+.strip figure{margin:0;flex:1;min-width:0}
+.strip canvas{width:100%;aspect-ratio:9/12;display:block;border-radius:6px}
+.strip figcaption{font-size:11px;opacity:.7;margin-top:4px;font-variant-numeric:tabular-nums}
+
+.spec{min-width:0}
+.spec .code{font-size:12px;letter-spacing:.14em;text-transform:uppercase;opacity:.7}
+.spec h2{margin:4px 0 8px;line-height:1;text-wrap:balance}
+.spec .thesis{font-size:17px;max-width:60ch;margin:0 0 18px}
+.spec h3{font-size:11px;letter-spacing:.14em;text-transform:uppercase;margin:22px 0 8px;opacity:.75;font-family:var(--f-shell);font-weight:800}
+.sw{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px}
+.sw div{font-size:12px;line-height:1.3}
+.sw i{display:block;height:44px;margin-bottom:5px;border:1px solid rgba(127,127,127,.25)}
+.sw small{display:block;opacity:.65;font-family:"IBM Plex Mono",monospace;font-size:10.5px}
+.spec ul{margin:0;padding-left:18px;max-width:66ch}
+.spec li{margin-bottom:4px}
+.typeS{display:grid;gap:6px}
+.typeS div{overflow-wrap:anywhere}
+.typeS small{display:block;font-family:"IBM Plex Mono",monospace;font-size:10.5px;opacity:.6}
+.tech{font-size:13.5px;max-width:66ch;opacity:.85}
+
+/* ===== A: Sablon propaganda ===== */
+#A{--bg:#e8e3d6;--fg:#26324a}
+#A h2{font-family:"Anton",sans-serif;font-size:clamp(38px,5vw,58px);text-transform:uppercase;color:#26324a;letter-spacing:.01em}
+#A h2 span{color:#ff6a3d}
+#A .spec{font-family:"Courier Prime",monospace}
+.hudA .dist{position:absolute;top:16px;left:14px;font:400 26px/1 "Anton",sans-serif;color:#26324a}
+.hudA .stamp{position:absolute;top:14px;right:12px;background:#ff6a3d;color:#26324a;mix-blend-mode:multiply;padding:4px 8px 5px;transform:rotate(2deg);font:400 12px/1.05 "Anton";text-transform:uppercase;text-align:right}
+.hudA .stamp b{display:block;font-size:30px;font-weight:400}
+.hudA .tick{position:absolute;bottom:0;left:0;right:0;background:#26324a;color:#e8e3d6;font:700 11px/1 "Courier Prime";padding:9px 10px;white-space:nowrap;overflow:hidden;text-transform:uppercase}
+.goA{background:#e8e3d6;color:#26324a;padding:30px 18px;display:flex;flex-direction:column;gap:10px;font-family:"Courier Prime",monospace;font-size:12px}
+.goA .big{font:400 46px/.9 "Anton";text-transform:uppercase}
+.goA .big span{color:#ff6a3d;mix-blend-mode:multiply}
+.goA .tsk{align-self:flex-start;border:3px solid #ff6a3d;color:#ff6a3d;font:400 26px/1 "Anton";padding:6px 10px;transform:rotate(-6deg);margin:10px 0}
+.goA .btn{margin-top:auto;background:#26324a;color:#e8e3d6;font:400 20px/1 "Anton";padding:12px;text-align:center;text-transform:uppercase}
+
+/* ===== B: Piksel ===== */
+#B{--bg:#0f0a0a;--fg:#d8c48c}
+#B h2{font-family:"Silkscreen",monospace;font-size:clamp(28px,4vw,44px);color:#f08a3c;font-weight:700}
+#B .spec{font-family:"VT323",monospace;font-size:20px;line-height:1.3}
+#B .spec h3{font-family:"Silkscreen",monospace;font-weight:400;font-size:11px}
+.phone.px canvas{image-rendering:pixelated;image-rendering:crisp-edges}
+.hudB{font-family:"Silkscreen",monospace;color:#f4e6b8}
+.hudB .row{position:absolute;top:12px;left:10px;right:10px;display:flex;justify-content:space-between;font-size:11px;text-shadow:2px 2px 0 #0f0a0a}
+.hudB .bar{position:absolute;top:32px;left:10px;right:10px;height:10px;border:2px solid #f4e6b8;background:#2a1912;display:flex;gap:1px;padding:1px}
+.hudB .bar i{flex:1;background:#c2462a}.hudB .bar i.o{background:transparent}
+.hudB .dlg{position:absolute;left:10px;right:10px;bottom:12px;background:#0f0a0a;border:2px solid #f4e6b8;box-shadow:0 0 0 2px #0f0a0a;padding:7px 8px;font-family:"VT323",monospace;font-size:16px;line-height:1.05}
+.hudB .dlg b{font-family:"Silkscreen";font-size:9px;color:#f08a3c;font-weight:400;display:block;margin-bottom:2px}
+.goB{background:#0f0a0a;color:#d8c48c;font-family:"VT323",monospace;font-size:18px;padding:34px 16px;display:flex;flex-direction:column;gap:8px}
+.goB .t{font-family:"Silkscreen";font-size:22px;color:#c2462a;line-height:1.1}
+.goB .dots{display:flex;justify-content:space-between;border-bottom:2px dotted #4b2c1c}
+.goB .z{color:#f08a3c}
+.goB .blink{margin-top:auto;font-family:"Silkscreen";color:#f4e6b8;text-align:center;animation:bl 1s steps(1) infinite}
+@keyframes bl{50%{opacity:0}}
+
+/* ===== C: Kolase ===== */
+#C{--bg:#d9d4c5;--fg:#1c1a17}
+#C h2{font-size:clamp(34px,5vw,54px);font-weight:400}
+#C .spec{font-family:"Special Elite",monospace}
+.ransom{display:inline-flex;flex-wrap:wrap;gap:2px}
+.ransom span{display:inline-block;padding:0 4px;line-height:1.05}
+.ransom span:nth-child(5n+1){font-family:"Abril Fatface";background:#1c1a17;color:#d9d4c5;transform:rotate(-3deg)}
+.ransom span:nth-child(5n+2){font-family:"Anton";background:#d7261e;color:#f3efe4;transform:rotate(2deg)}
+.ransom span:nth-child(5n+3){font-family:"Special Elite";background:#f3efe4;color:#1c1a17;transform:rotate(-1deg)}
+.ransom span:nth-child(5n+4){font-family:"Abril Fatface";background:#efd94a;color:#1c1a17;transform:rotate(3deg)}
+.ransom span:nth-child(5n){font-family:"Anton";background:#f3efe4;color:#d7261e;transform:rotate(-2deg)}
+.hudC .clip{position:absolute;background:#f3efe4;color:#1c1a17;box-shadow:1px 2px 4px rgba(0,0,0,.35);font-family:"Special Elite"}
+.hudC .ispu{top:14px;right:10px;padding:5px 8px;transform:rotate(3deg);font-size:10px;text-align:right}
+.hudC .ispu b{display:block;font:400 28px/1 "Abril Fatface"}
+.hudC .tape{position:absolute;top:8px;right:34px;width:44px;height:14px;background:rgba(239,217,74,.6);transform:rotate(-8deg)}
+.hudC .dist{top:16px;left:10px;padding:3px 6px;font:400 18px/1 "Anton";background:#1c1a17;color:#f3efe4;transform:rotate(-2deg)}
+.hudC .head{bottom:16px;left:8px;right:8px;font-size:22px;transform:rotate(-1.5deg)}
+.hudC .head .ransom span{font-size:17px}
+.goC{background:#f3efe4;color:#1c1a17;font-family:"Special Elite",monospace;font-size:11.5px;padding:22px 16px;display:flex;flex-direction:column;gap:8px;background-image:repeating-linear-gradient(0deg,transparent 0 17px,rgba(0,0,0,.04) 17px 18px)}
+.goC .mast{font:400 26px/1 "Abril Fatface";border-bottom:3px double #1c1a17;padding-bottom:4px;text-align:center}
+.goC .hd{font:400 20px/1.05 "Anton";text-transform:uppercase}
+.goC .red{background:#1c1a17;color:transparent;user-select:none}
+.goC .z{align-self:flex-end;font:400 30px/1 "Anton";color:#d7261e;border:3px solid #d7261e;border-radius:50%;padding:12px 16px;transform:rotate(-10deg)}
+
+/* ===== D: Siluet ===== */
+#D{--bg:#b9b4a2;--fg:#0e0d0b}
+#D h2{font-family:"Big Shoulders Display";font-weight:300;font-size:clamp(46px,6vw,74px);text-transform:uppercase;letter-spacing:.06em}
+#D h2 span{color:#b3231b;font-weight:900}
+#D .spec{font-family:"Archivo Narrow",sans-serif;font-size:16px}
+.hudD .n{position:absolute;top:18px;left:0;right:0;text-align:center;font:300 40px/1 "Big Shoulders Display";color:#b3231b;letter-spacing:.04em}
+.hudD .n small{display:block;font:500 9px/1 "Archivo Narrow";letter-spacing:.4em;color:#0e0d0b;margin-top:4px}
+.hudD .sub{position:absolute;left:14px;right:14px;bottom:64px;text-align:center;font:400 13px/1.3 "Archivo Narrow";color:#e9e5d8;text-shadow:0 1px 2px #000}
+.goD{background:#0e0d0b;color:#b9b4a2;font-family:"Archivo Narrow";display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:20px;gap:16px}
+.goD .l1{font:300 26px/1.1 "Big Shoulders Display";letter-spacing:.1em;text-transform:uppercase;color:#e9e5d8}
+.goD .l2{font-size:12px;max-width:24ch;opacity:.7}
+.goD .z{font:900 13px/1 "Big Shoulders Display";letter-spacing:.4em;color:#b3231b}
+
+/* ===== E: Brosur ===== */
+#E{--bg:#e3f4ea;--fg:#14322a}
+#E h2{font-family:"Nunito";font-weight:900;font-size:clamp(34px,5vw,54px);color:#1f7a4f}
+#E h2 span{font-family:"IBM Plex Mono",monospace;font-weight:600;color:#14110f;background:#e8623a;padding:0 8px;font-size:.6em;vertical-align:middle}
+#E .spec{font-family:"Nunito",sans-serif;font-weight:600}
+.hudE .card{position:absolute;background:#fff;border-radius:14px;box-shadow:0 4px 14px rgba(31,122,79,.18);font-family:"Nunito";color:#14322a;padding:6px 10px}
+.hudE .k1{top:14px;left:10px;font-size:9.5px;font-weight:800}
+.hudE .k1 b{display:block;font-size:20px;font-weight:900;color:#1f7a4f}
+.hudE .k2{top:14px;right:10px;font-size:9.5px;font-weight:800;text-align:right}
+.hudE .k2 b{display:block;font-size:20px;font-weight:900}
+.hudE .k2 em{font-style:normal;color:#1f9a5c}
+.hudE .real{position:absolute;bottom:12px;left:10px;right:10px;font:400 10.5px/1.35 "IBM Plex Mono";color:#e8623a}
+.goE{background:#ffffff;color:#14322a;font-family:"Nunito";padding:26px 16px;display:flex;flex-direction:column;gap:9px;font-size:12px;position:relative}
+.goE .lbl{font-size:10px;font-weight:900;color:#1f9a5c;letter-spacing:.08em;text-transform:uppercase}
+.goE .h{font-size:21px;font-weight:900;line-height:1.1}
+.goE .ok{background:#e3f4ea;border-radius:10px;padding:7px 10px;font-weight:800}
+.goE .burn{position:absolute;left:0;right:0;bottom:0;height:42%;background:radial-gradient(120% 70% at 30% 100%,#14110f 55%,#3a1c10 70%,transparent 72%);}
+.goE .raw{position:absolute;left:16px;right:16px;bottom:18px;font:400 11px/1.4 "IBM Plex Mono";color:#e8623a}
+.goE .raw b{color:#f4ece6;font-weight:600}
+
+footer{padding-block:24px 48px;color:var(--mute);font-size:13px}
+footer p{max-width:66ch}
+@media (prefers-reduced-motion:reduce){.goB .blink{animation:none}}
+</style>
+
+<div class="wrap">
+<header class="top">
+  <div class="eyebrow">Dikejar Sawit · overhaul visual · putaran 1</div>
+  <h1>Lima arah visual</h1>
+  <p>Kelima arah ini memakai premis, mekanik, dan teks satire yang sama. Yang berbeda hanya cara dunia, karakter, UI, dan atmosfernya digambar. Tiap panel menampilkan layar main, layar game over, dan perubahan tampilan dari ISPU Baik sampai Berbahaya.</p>
+  <p>Semua gambar di halaman ini dibuat dengan kode, tanpa aset. Hasil akhirnya akan lebih halus. Yang perlu dinilai adalah arahnya, bukan detail gambarnya.</p>
+  <nav class="jump" aria-label="Arah visual">
+    <a href="#A"><b>A</b>Sablon Propaganda</a>
+    <a href="#B"><b>B</b>Piksel Gambut</a>
+    <a href="#C"><b>C</b>Kliping Zine</a>
+    <a href="#D"><b>D</b>Siluet Kabut</a>
+    <a href="#E"><b>E</b>Laporan Keberlanjutan™</a>
+  </nav>
+</header>
+</div>
+
+<!-- ================= A ================= -->
+<section class="dir" id="A"><div class="in">
+  <div>
+    <div class="phones">
+      <div class="phone"><canvas data-dir="A" data-f=".45"></canvas>
+        <div class="ov hudA"><div class="dist">412 M</div><div class="stamp">ISPU<b>186</b>Tidak sehat</div><div class="tick">Sumber api tidak diketahui ✶ HLA raih penghargaan hijau ✶</div></div></div>
+      <div class="phone goA"><div class="big">Kamu<br>mati<br><span>karena<br>ISPA</span></div><div>PT HLA menyampaikan duka cita mendalam.</div><div class="tsk">TERSANGKA: 0</div><div>412 m · 7 bibit · 2 kemarau</div><div class="btn">Lari lagi</div></div>
+    </div>
+    <div class="strip"><figure><canvas data-dir="A" data-f=".05"></canvas><figcaption>ISPU 30 · Baik</figcaption></figure><figure><canvas data-dir="A" data-f=".5"></canvas><figcaption>ISPU 250</figcaption></figure><figure><canvas data-dir="A" data-f=".95"></canvas><figcaption>ISPU 475 · Berbahaya</figcaption></figure></div>
+  </div>
+  <div class="spec">
+    <div class="code">Arah A</div>
+    <h2>Sablon <span>Propaganda</span></h2>
+    <p class="thesis">Seluruh game dicetak risograph tiga tinta seperti poster kampanye murahan. Lapisan warnanya meleset sedikit dan kertasnya berbintik. Estetika poster "Bersama Menjaga Hutan" dipakai untuk menceritakan hal sebaliknya.</p>
+    <h3>Palet: 3 tinta + kertas</h3>
+    <div class="sw">
+      <div><i style="background:#e8e3d6"></i>Kertas<small>#E8E3D6</small></div>
+      <div><i style="background:#ff6a3d"></i>Fluoro oranye: api, matahari, ISPU<small>#FF6A3D</small></div>
+      <div><i style="background:#1f8a5b"></i>Hijau: sawit, logo HLA<small>#1F8A5B</small></div>
+      <div><i style="background:#26324a"></i>Biru tinta: manusia, mesin<small>#26324A</small></div>
+    </div>
+    <h3>Tipografi</h3>
+    <div class="typeS">
+      <div style="font:400 34px/1 Anton;text-transform:uppercase">Menanam Masa Depan<small>Anton: judul, angka, stempel</small></div>
+      <div style="font:400 15px/1.4 'Courier Prime'">Rapat koordinasi dijadwalkan minggu depan.<small>Courier Prime: ticker, siaran pers, fakta</small></div>
+    </div>
+    <h3>Yang berubah di game</h3>
+    <ul>
+      <li>Langit dan kabut digambar dengan titik halftone. Makin tinggi ISPU, titik oranye makin rapat sampai langit jadi blok tinta pekat.</li>
+      <li>Sawit dicetak sebagai cap hijau berulang dengan bentuk yang sama, sehingga monokultur terasa visual.</li>
+      <li>Persilangan tinta oranye dan biru menghasilkan cokelat gosong secara alami (multiply), tanpa warna tambahan.</li>
+      <li>HUD berbentuk stempel dan ticker berbentuk pita cetak. Game over dibuat seperti poster duka cita.</li>
+    </ul>
+    <h3>Teknis</h3>
+    <p class="tech">Canvas 2D dengan tiap tinta di layer offscreen terpisah, digabung memakai <code>multiply</code> dengan offset 1–2 px, lalu ditambah tekstur grain statis. Ringan di HP. Risikonya, kontras di tingkat Berbahaya harus dijaga karena semua jadi oranye-cokelat.</p>
+  </div>
+</div></section>
+
+<!-- ================= B ================= -->
+<section class="dir" id="B"><div class="in">
+  <div>
+    <div class="phones">
+      <div class="phone px"><canvas data-dir="B" data-f=".5"></canvas>
+        <div class="ov hudB"><div class="row"><span>412M</span><span>BIBIT×07</span></div><div class="bar"><i></i><i></i><i></i><i></i><i></i><i></i><i class="o"></i><i class="o"></i><i class="o"></i><i class="o"></i></div><div class="dlg"><b>HLA</b>Selamat pagi! Menanam masa depan ♪</div></div></div>
+      <div class="phone goB"><div class="t">KAMU MENINGGAL KARENA ISPA</div><div style="opacity:.7">PT HLA berduka cita.</div><div class="dots"><span>JARAK</span><span>412M</span></div><div class="dots"><span>BIBIT</span><span>07</span></div><div class="dots"><span>KEMARAU</span><span>02</span></div><div class="dots z"><span>TERSANGKA</span><span>00</span></div><div class="blink">▶ LARI LAGI</div></div>
+    </div>
+    <div class="strip"><figure><canvas data-dir="B" data-f=".05"></canvas><figcaption>ISPU 30 · Baik</figcaption></figure><figure><canvas data-dir="B" data-f=".5"></canvas><figcaption>ISPU 250</figcaption></figure><figure><canvas data-dir="B" data-f=".95"></canvas><figcaption>ISPU 475 · Berbahaya</figcaption></figure></div>
+  </div>
+  <div class="spec">
+    <div class="code">Arah B</div>
+    <h2>Piksel Gambut</h2>
+    <p class="thesis">Resolusi asli 96×208 piksel dengan 11 warna gambut, sawit, dan asap. Kabut dibuat dengan dithering, bukan transparansi, sehingga asap terasa menggerus gambar. Tampilan game anak 90-an ini menyimpan cerita yang tidak lucu.</p>
+    <h3>Palet terkunci (11 warna)</h3>
+    <div class="sw">
+      <div><i style="background:#0f0a0a"></i>Arang<small>#0F0A0A</small></div>
+      <div><i style="background:#4b2c1c"></i>Gambut<small>#4B2C1C</small></div>
+      <div><i style="background:#4a5326"></i>Sawit tua<small>#4A5326</small></div>
+      <div><i style="background:#7c8534"></i>Sawit<small>#7C8534</small></div>
+      <div><i style="background:#b4a55a"></i>Asap kuning<small>#B4A55A</small></div>
+      <div><i style="background:#d8c48c"></i>Kabut<small>#D8C48C</small></div>
+      <div><i style="background:#c2462a"></i>Bara<small>#C2462A</small></div>
+      <div><i style="background:#f08a3c"></i>Api<small>#F08A3C</small></div>
+    </div>
+    <h3>Tipografi</h3>
+    <div class="typeS">
+      <div style="font:700 26px/1 Silkscreen">TERSANGKA 00<small>Silkscreen: HUD, judul</small></div>
+      <div style="font:400 22px/1.1 VT323">HLA: Lahan kami terbakar dengan sendirinya.<small>VT323: dialog, ticker, fakta</small></div>
+    </div>
+    <h3>Yang berubah di game</h3>
+    <ul>
+      <li>Sprite dengan animasi lari 6 frame. Batuk dan tersandung tampil sebagai frame khusus, dan horor datang dari animasi yang terhenti.</li>
+      <li>Meteran ISPU berupa bar segmen. Notifikasi korporat muncul sebagai kotak dialog RPG yang ceria.</li>
+      <li>Di tingkat Berbahaya, palet dikunci lebih sempit lagi: dunia tinggal 4 warna.</li>
+    </ul>
+    <h3>Teknis</h3>
+    <p class="tech">Render ke canvas kecil lalu diperbesar dengan <code>image-rendering: pixelated</code>, dengan kuantisasi palet dan Bayer dither. Bisa dipakai bersama Phaser atau PixiJS untuk sprite sheet. Butuh aset sprite buatan tangan, dan di situlah kualitas arah ini ditentukan.</p>
+  </div>
+</div></section>
+
+<!-- ================= C ================= -->
+<section class="dir" id="C"><div class="in">
+  <div>
+    <div class="phones">
+      <div class="phone"><canvas data-dir="C" data-f=".5"></canvas>
+        <div class="ov hudC"><div class="clip dist">412 M</div><div class="tape"></div><div class="clip ispu">ISPU hari ini<b>186</b>tidak sehat</div><div class="head"><span class="ransom"><span>SITUASI</span><span>TER</span><span>KEN</span><span>DALI</span></span></div></div></div>
+      <div class="phone goC"><div class="mast">Warta Asap</div><div class="hd">Warga tewas, perusahaan berduka</div><div>Seorang warga meninggal karena ISPA setelah berlari 412 meter. <span class="red">nama perusahaan dihapus</span> menyampaikan duka cita. Sumber api <span class="red">tidak diketahui</span>.</div><div style="opacity:.7">Fakta: karhutla 2015 menghanguskan sekitar 2,6 juta ha. (Bank Dunia, 2016)</div><div class="z">TERSANGKA: 0</div></div>
+    </div>
+    <div class="strip"><figure><canvas data-dir="C" data-f=".05"></canvas><figcaption>ISPU 30 · Baik</figcaption></figure><figure><canvas data-dir="C" data-f=".5"></canvas><figcaption>ISPU 250</figcaption></figure><figure><canvas data-dir="C" data-f=".95"></canvas><figcaption>ISPU 475 · Berbahaya</figcaption></figure></div>
+  </div>
+  <div class="spec">
+    <div class="code">Arah C</div>
+    <h2><span class="ransom"><span>Kli</span><span>ping</span><span>Zine</span></span></h2>
+    <p class="thesis">Dunia game tampil sebagai foto koran halftone. Semua suara korporat ditempel di atasnya sebagai potongan kertas, selotip, coretan spidol merah, dan huruf tebusan. Hasilnya seperti zine aktivis yang hidup.</p>
+    <h3>Palet</h3>
+    <div class="sw">
+      <div><i style="background:#d9d4c5"></i>Kertas koran<small>#D9D4C5</small></div>
+      <div><i style="background:#1c1a17"></i>Tinta cetak<small>#1C1A17</small></div>
+      <div><i style="background:#f3efe4"></i>Potongan kertas<small>#F3EFE4</small></div>
+      <div><i style="background:#d7261e"></i>Spidol merah<small>#D7261E</small></div>
+      <div><i style="background:#efd94a"></i>Selotip / stabilo<small>#EFD94A</small></div>
+    </div>
+    <h3>Tipografi</h3>
+    <div class="typeS">
+      <div><span class="ransom" style="font-size:24px"><span>SAHAM</span><span>NAIK</span><span>3%</span></span><small>Huruf tebusan dari campuran Abril Fatface, Anton, dan Special Elite: tajuk dan ticker</small></div>
+      <div style="font:400 15px/1.4 'Special Elite'">Warga diimbau tetap di dalam rumah.<small>Special Elite: isi berita, fakta, game over</small></div>
+    </div>
+    <h3>Yang berubah di game</h3>
+    <ul>
+      <li>Asap dibuat dengan titik halftone yang membengkak, sehingga ISPU tinggi tampak seperti foto koran yang hancur karena tinta terlalu tebal.</li>
+      <li>Ticker berganti menjadi tajuk dari huruf tebusan yang ditempel bergiliran. Spidol merah menandai bahaya, misalnya buldoser dilingkari.</li>
+      <li>Game over berbentuk halaman berita duka dengan sensor batang hitam pada nama perusahaan.</li>
+    </ul>
+    <h3>Teknis</h3>
+    <p class="tech">Adegan dirender sebagai luminansi di buffer kecil, lalu diubah menjadi titik halftone di Canvas 2D atau shader PixiJS. Potongan kertas memakai DOM atau sprite. Arah ini paling kuat sebagai "pernyataan" dan paling mudah dibagikan sebagai tangkapan layar. Risikonya, keterbacaan rintangan di tengah tekstur.</p>
+  </div>
+</div></section>
+
+<!-- ================= D ================= -->
+<section class="dir" id="D"><div class="in">
+  <div>
+    <div class="phones">
+      <div class="phone"><canvas data-dir="D" data-f=".55"></canvas>
+        <div class="ov hudD"><div class="n">186<small>ISPU</small></div><div class="sub">Pemerintah: situasi terkendali.</div></div></div>
+      <div class="phone goD"><div class="l1">Kamu meninggal<br>karena ISPA</div><div class="l2">PT Hijau Lestari Abadi Tbk menyampaikan duka cita mendalam.</div><div class="z">TERSANGKA 0</div><div class="l2" style="font-size:11px">412 m · 2 kemarau</div></div>
+    </div>
+    <div class="strip"><figure><canvas data-dir="D" data-f=".05"></canvas><figcaption>ISPU 30 · Baik</figcaption></figure><figure><canvas data-dir="D" data-f=".5"></canvas><figcaption>ISPU 250</figcaption></figure><figure><canvas data-dir="D" data-f=".95"></canvas><figcaption>ISPU 475 · Berbahaya</figcaption></figure></div>
+  </div>
+  <div class="spec">
+    <div class="code">Arah D</div>
+    <h2>Siluet <span>Kabut</span></h2>
+    <p class="thesis">Bidang-bidang datar tanpa gradien. Kedalaman hanya ditunjukkan lapisan siluet yang makin pucat ke arah cakrawala. Asap digambar abu-kuning seperti aslinya, bukan oranye sinematik. Satu-satunya warna adalah merah matahari dan angka ISPU.</p>
+    <h3>Palet: abu asap + satu merah</h3>
+    <div class="sw">
+      <div><i style="background:#c9c6b4"></i>Langit asap<small>#C9C6B4</small></div>
+      <div><i style="background:#8e8670"></i>Lapis jauh<small>#8E8670</small></div>
+      <div><i style="background:#5c5546"></i>Lapis tengah<small>#5C5546</small></div>
+      <div><i style="background:#2e2a22"></i>Lapis dekat<small>#2E2A22</small></div>
+      <div><i style="background:#0e0d0b"></i>Siluet<small>#0E0D0B</small></div>
+      <div><i style="background:#b3231b"></i>Matahari / ISPU<small>#B3231B</small></div>
+    </div>
+    <h3>Tipografi</h3>
+    <div class="typeS">
+      <div style="font:300 38px/1 'Big Shoulders Display';letter-spacing:.06em;color:#b3231b">186 · 312 · 475<small>Big Shoulders Display Light: angka ISPU</small></div>
+      <div style="font:400 16px/1.4 'Archivo Narrow'">Pemerintah: sebagian asap ini kiriman dari tempat lain.<small>Archivo Narrow: teks satire tampil sebagai subtitle film</small></div>
+    </div>
+    <h3>Yang berubah di game</h3>
+    <ul>
+      <li>HUD hampir hilang dan hanya menyisakan satu angka. Suara korporat muncul sebagai subtitle di sepertiga bawah layar, dingin seperti narasi dokumenter.</li>
+      <li>Jarak pandang berkurang secara harfiah karena lapisan siluet hilang satu per satu.</li>
+      <li>Horor lewat bentuk: buldoser hanya dua titik lampu di kabut, dan siluet warga muncul di lapisan tengah.</li>
+    </ul>
+    <h3>Teknis</h3>
+    <p class="tech">Paling sederhana: Canvas 2D dengan beberapa lapis parallax berwarna datar. Kuat di sisi atmosfer dan mudah dijaga konsistensinya. Risikonya, terasa terlalu mirip game indie siluet seperti Limbo kalau komposisi dan warna asap-kuning ini tidak dijaga.</p>
+  </div>
+</div></section>
+
+<!-- ================= E ================= -->
+<section class="dir" id="E"><div class="in">
+  <div>
+    <div class="phones">
+      <div class="phone"><canvas data-dir="E" data-f=".5"></canvas>
+        <div class="ov hudE"><div class="card k1">Pohon ditanam<b>12</b></div><div class="card k2">Kualitas udara<b>186</b><em>✓ dalam pemantauan</em></div><div class="real">ISPU sebenarnya: 186 (tidak sehat)<br>hotspot satelit: 3.412</div></div></div>
+      <div class="phone goE"><div class="lbl">Siaran pers · HLA Care</div><div class="h">Insiden di area konsesi telah ditangani</div><div class="ok">✓ Zero burning tetap terjaga</div><div class="ok">✓ Duka cita telah disampaikan</div><div class="ok">✓ Tersangka: 0</div><div class="burn"></div><div class="raw"><b>Yang terjadi:</b> kamu meninggal karena ISPA setelah 412 m.<br>Fakta: ±1,6 juta ha terbakar pada 2019.</div></div>
+    </div>
+    <div class="strip"><figure><canvas data-dir="E" data-f=".05"></canvas><figcaption>ISPU 30 · Baik</figcaption></figure><figure><canvas data-dir="E" data-f=".5"></canvas><figcaption>ISPU 250</figcaption></figure><figure><canvas data-dir="E" data-f=".95"></canvas><figcaption>ISPU 475 · Berbahaya</figcaption></figure></div>
+  </div>
+  <div class="spec">
+    <div class="code">Arah E · ide saya</div>
+    <h2>Laporan Keberlanjutan™ <span>terbakar</span></h2>
+    <p class="thesis">Game dimulai sebagai ilustrasi brosur CSR yang manis: sawit bulat, bukit pastel, kartu KPI, semuanya "on track". ISPU membakar lapisan brosur itu dari bawah. Garis hangusnya naik sampai yang tersisa hanya dunia asli yang gelap. Suara korporat di game ini bukan sekadar teks, tapi seluruh lapisan visualnya.</p>
+    <h3>Palet: dua dunia</h3>
+    <div class="sw">
+      <div><i style="background:#e3f4ea"></i>Mint brosur<small>#E3F4EA</small></div>
+      <div><i style="background:#1f7a4f"></i>Hijau korporat<small>#1F7A4F</small></div>
+      <div><i style="background:#ffd45c"></i>Matahari ceria<small>#FFD45C</small></div>
+      <div><i style="background:#14110f"></i>Dunia asli<small>#14110F</small></div>
+      <div><i style="background:#e8623a"></i>Bara / data asli<small>#E8623A</small></div>
+    </div>
+    <h3>Tipografi</h3>
+    <div class="typeS">
+      <div style="font:900 30px/1 Nunito;color:#1f7a4f">Bersama Menjaga Hutan<small>Nunito Black: suara korporat yang ramah dan bulat (sengaja)</small></div>
+      <div style="font:400 14px/1.4 'IBM Plex Mono';color:#14110f">ISPU 412 · hotspot 3.412 · tersangka 0<small>IBM Plex Mono: data asli yang muncul dari balik brosur</small></div>
+    </div>
+    <h3>Yang berubah di game</h3>
+    <ul>
+      <li>Garis hangus menjadi meteran ISPU itu sendiri. Hujan "menambal" brosur kembali, lalu kemarau berikutnya membakarnya lagi.</li>
+      <li>Setiap angka punya dua versi: kartu KPI korporat (rapi, ✓) dan data mentah yang jujur dalam huruf mono oranye.</li>
+      <li>Game over berbentuk siaran pers dengan centang hijau yang ujung bawahnya hangus.</li>
+    </ul>
+    <h3>Teknis</h3>
+    <p class="tech">Dua adegan dirender terpisah, lalu digabung dengan mask garis bakar ber-noise. Ini mudah dibuat dengan PixiJS (mask + displacement filter) atau Canvas 2D dengan <code>clip</code>. Arah ini paling orisinal dan paling dekat dengan premis satire, tapi pekerjaannya dua kali karena ada dua set gaya.</p>
+  </div>
+</div></section>
+
+<div class="wrap"><footer>
+  <p>Cara memberi masukan: sebutkan huruf arahnya (A–E), lalu apa yang dipakai, dibuang, atau digabung. Contoh: "D, tapi game over pakai siaran pers E". Setelah satu arah dipilih, saya buat versi yang bisa dimainkan.</p>
+  <p>Alternatif lain yang belum saya gambar: tampilan citra satelit termal dari atas, seperti peta hotspot FIRMS. Arah itu mengubah sudut kamera, jadi dampaknya ke mekanik lebih besar.</p>
+</footer></div>
+
+<script>
+"use strict";
+// ---------- util ----------
+const R=s=>{let a=s>>>0;return()=>{a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}};
+const hx=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16));
+const lerp=(a,b,k)=>a+(b-a)*k;
+const mix=(c1,c2,k)=>{const a=hx(c1),b=hx(c2);return`rgb(${a.map((v,i)=>Math.round(lerp(v,b[i],k))).join(',')})`};
+const clamp=(v,a=0,b=1)=>Math.max(a,Math.min(b,v));
+function cam(w,h){const hor=h*.36,F=Math.min(w*1.3,h*.8);return{hor,F,w,h,p(x,y,z){const s=F/(z+3.2);return{x:w/2+x*s,y:hor+(1.7-y)*s,s}}}}
+const LW=.8;
+const SC={palms:[],far:[]};
+(()=>{const r=R(11);for(const side of[-1,1])for(let z=1.2;z<62;z+=r()*2.2+2.8)SC.palms.push({side,z,x:side*(1.85+r()*1.6),h:2.5+r()*1.3,seed:r()});SC.palms.sort((a,b)=>b.z-a.z);for(let i=0;i<44;i++)SC.far.push({u:i/43+(r()-.5)*.02,h:.6+r()*.6});})();
+const vis=f=>62-48*f;
+
+function palm(ctx,c,pm,o){const b=c.p(pm.x,0,pm.z),t=c.p(pm.x,pm.h,pm.z),s=b.s;ctx.lineCap='round';ctx.strokeStyle=o.trunk;ctx.lineWidth=Math.max(o.min||1,.17*s);ctx.beginPath();ctx.moveTo(b.x,b.y);ctx.lineTo(t.x,t.y);ctx.stroke();ctx.strokeStyle=o.frond;ctx.lineWidth=Math.max(o.min||1,(o.fw||.08)*s);const n=o.n||9,d=o.droop??.45;for(let i=0;i<n;i++){const an=i/n*Math.PI*2+pm.seed*4,dx=Math.cos(an)*1.25*s,dy=Math.sin(an)*.3*s;ctx.beginPath();ctx.moveTo(t.x,t.y);ctx.quadraticCurveTo(t.x+dx*.55,t.y-d*s+dy*.5,t.x+dx,t.y+d*s+dy);ctx.stroke();}}
+function road(ctx,c){const a=c.p(-1.55*LW,0,90),b=c.p(1.55*LW,0,90),d=c.p(1.55*LW,0,-1.8),e=c.p(-1.55*LW,0,-1.8);ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.lineTo(d.x,d.y);ctx.lineTo(e.x,e.y);ctx.closePath();}
+function runner(ctx,c,lane,col){const p=c.p(lane*LW,0,0),s=p.s;ctx.save();ctx.translate(p.x,p.y);ctx.strokeStyle=col;ctx.fillStyle=col;ctx.lineCap='round';ctx.lineJoin='round';ctx.lineWidth=.11*s;ctx.beginPath();ctx.moveTo(0,-.45*s);ctx.lineTo(-.15*s,-.22*s);ctx.lineTo(-.09*s,0);ctx.moveTo(0,-.45*s);ctx.lineTo(.16*s,-.26*s);ctx.lineTo(.3*s,-.32*s);ctx.stroke();ctx.lineWidth=.21*s;ctx.beginPath();ctx.moveTo(0,-.46*s);ctx.lineTo(.04*s,-.84*s);ctx.stroke();ctx.lineWidth=.08*s;ctx.beginPath();ctx.moveTo(.03*s,-.8*s);ctx.lineTo(-.21*s,-.6*s);ctx.lineTo(-.15*s,-.45*s);ctx.moveTo(.04*s,-.8*s);ctx.lineTo(.23*s,-.67*s);ctx.lineTo(.31*s,-.8*s);ctx.stroke();ctx.beginPath();ctx.arc(.06*s,-1*s,.12*s,0,7);ctx.fill();ctx.restore();}
+function dozer(ctx,c,lane,z,body,dark,lamp){const x=lane*LW,g=c.p(x,0,z),s=g.s,w=LW*.9*s,top=c.p(x,1.55,z).y,mid=c.p(x,.95,z).y,lo=c.p(x,.35,z).y,bl=c.p(x,.6,z).y;ctx.fillStyle=dark;ctx.fillRect(g.x-w/2,lo,w,g.y-lo);ctx.fillStyle=body;ctx.fillRect(g.x-w*.42,mid,w*.84,lo-mid);ctx.fillRect(g.x-w*.3,top,w*.6,mid-top);ctx.fillStyle=dark;ctx.fillRect(g.x-w*.22,top+(mid-top)*.18,w*.44,(mid-top)*.55);ctx.fillRect(g.x-w*.55,bl,w*1.1,g.y-bl);if(lamp){ctx.fillStyle=lamp;ctx.beginPath();ctx.arc(g.x-w*.3,mid+.1*s,.06*s,0,7);ctx.arc(g.x+w*.3,mid+.1*s,.06*s,0,7);ctx.fill();}return{x:g.x,y:(top+g.y)/2,r:w*.9};}
+function log(ctx,c,lane,z,col){const p=c.p(lane*LW,0,z),s=p.s,w=LW*.92*s,h=.5*s;ctx.fillStyle=col;ctx.beginPath();if(ctx.roundRect)ctx.roundRect(p.x-w/2,p.y-h,w,h,h*.45);else ctx.rect(p.x-w/2,p.y-h,w,h);ctx.fill();}
+function flames(ctx,w,h,ht,r,n=14){ctx.beginPath();ctx.moveTo(-5,h+5);for(let i=0;i<=n;i++){const x=i/n*w,k=.45+.55*r();ctx.lineTo(x-w/n/2,h-ht*.35*k);ctx.lineTo(x,h-ht*k);}ctx.lineTo(w+5,h+5);ctx.closePath();}
+function grain(ctx,w,h,n,col,seed){const r=R(seed);ctx.fillStyle=col;for(let i=0;i<n;i++)ctx.fillRect(r()*w,r()*h,1,1);}
+
+// ---------- A: risograph ----------
+function drawA(ctx,w,h,f){
+ const c=cam(w,h),r=R(3),O='#ff6a3d',G='#1f8a5b',B='#26324a',V=vis(f);
+ ctx.fillStyle='#e8e3d6';ctx.fillRect(0,0,w,h);
+ const ink=(off,fn)=>{ctx.save();ctx.globalCompositeOperation='multiply';ctx.translate(off[0],off[1]);fn();ctx.restore();};
+ const st=Math.max(4,w/48);
+ ink([1.5,-1],()=>{ctx.fillStyle=O;
+  for(let y=0;y<c.hor+st;y+=st)for(let x=(y/st%2)*st/2;x<w+st;x+=st){const d=clamp(.08+f*.85+(y/c.hor)*.25*(1-f));ctx.beginPath();ctx.arc(x,y,st*.62*Math.sqrt(d),0,7);ctx.fill();}
+  ctx.beginPath();ctx.arc(w*.68,c.hor*.42,w*(.09+f*.03),0,7);ctx.fill();
+  for(let y=c.hor;y<h;y+=st*1.2)for(let x=((y/st)%2)*st/2;x<w;x+=st*1.2){const d=.05+f*.25;ctx.beginPath();ctx.arc(x,y,st*.5*Math.sqrt(d),0,7);ctx.fill();}
+  flames(ctx,w,h,h*(.07+f*.15),R(5));ctx.fill();
+ });
+ ink([-1,1],()=>{
+  ctx.fillStyle=G;ctx.strokeStyle=G;for(const t of SC.far){const x=t.u*w,hh=h*.02*t.h;ctx.globalAlpha=clamp(1-f*1.1);ctx.fillRect(x-.6,c.hor-hh,1.4,hh);ctx.beginPath();ctx.ellipse(x,c.hor-hh,hh*.6,hh*.25,0,0,7);ctx.fill();}
+  for(const pm of SC.palms){if(pm.z>V)continue;ctx.globalAlpha=clamp((V-pm.z)/(V*.35));palm(ctx,c,pm,{trunk:G,frond:G,fw:.1,min:1.2});}
+  ctx.globalAlpha=1;
+ });
+ ink([0,0],()=>{ctx.strokeStyle=B;ctx.fillStyle=B;
+  for(const sx of[-1.55,1.55]){const a=c.p(sx*LW,0,V),b=c.p(sx*LW,0,-1.8);ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();}
+  for(const lx of[-.5,.5])for(let z=0;z<V;z+=4){const a=c.p(lx*LW,0,z),b=c.p(lx*LW,0,z+1.6);ctx.lineWidth=Math.max(1,.05*a.s);ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();}
+  if(18<V)dozer(ctx,c,1,15,B,B);log(ctx,c,-1,8,B);runner(ctx,c,0,B);
+ });
+ grain(ctx,w,h,w*h/30,'rgba(38,50,74,.35)',9);grain(ctx,w,h,w*h/40,'rgba(232,227,214,.8)',10);
+}
+
+// ---------- B: pixel ----------
+const PAL=['#0f0a0a','#2a1912','#4b2c1c','#6e4426','#4a5326','#7c8534','#b4a55a','#d8c48c','#c2462a','#f08a3c','#f4e6b8'].map(hx);
+const BAY=[0,8,2,10,12,4,14,6,3,11,1,9,15,7,13,5];
+function drawB(ctx,w,h,f){
+ const lw=96,lh=Math.round(96*h/w),o=document.createElement('canvas');o.width=lw;o.height=lh;const x=o.getContext('2d'),c=cam(lw,lh),V=vis(f);
+ const sg=x.createLinearGradient(0,0,0,c.hor);sg.addColorStop(0,mix('#8fa6a0','#3a1a12',f));sg.addColorStop(1,mix('#d8c48c','#8a5a32',f));x.fillStyle=sg;x.fillRect(0,0,lw,c.hor+1);
+ x.fillStyle=mix('#f4e6b8','#c2462a',f);x.beginPath();x.arc(lw*.68,c.hor*.45,7,0,7);x.fill();
+ x.fillStyle=mix('#4a5326','#6e4426',f);for(const t of SC.far){x.fillRect(Math.round(t.u*lw),Math.round(c.hor-3*t.h),1,Math.ceil(3*t.h));}
+ const gg=x.createLinearGradient(0,c.hor,0,lh);gg.addColorStop(0,mix('#b4a55a','#6e4426',f));gg.addColorStop(.3,'#4b2c1c');gg.addColorStop(1,'#2a1912');x.fillStyle=gg;x.fillRect(0,c.hor,lw,lh);
+ road(x,c);const rg=x.createLinearGradient(0,c.hor,0,lh);rg.addColorStop(0,mix('#b4a55a','#6e4426',f));rg.addColorStop(.35,'#6e4426');rg.addColorStop(1,'#4b2c1c');x.fillStyle=rg;x.fill();
+ for(const pm of SC.palms){if(pm.z>V)continue;const k=clamp((V-pm.z)/(V*.4));palm(x,c,pm,{trunk:mix(f>.5?'#6e4426':'#b4a55a','#2a1912',k),frond:mix(f>.5?'#6e4426':'#b4a55a',f>.6?'#2a1912':'#4a5326',k),fw:.11,min:1});}
+ if(15<V)dozer(x,c,1,15,mix('#8a7a3a','#f08a3c',.3),'#2a1912','#f4e6b8');log(x,c,-1,8,'#3a2416');runner(x,c,0,'#0f0a0a');
+ x.fillStyle='#c2462a';flames(x,lw,lh,lh*(.06+f*.12),R(4),10);x.fill();x.fillStyle='#f08a3c';flames(x,lw,lh,lh*(.03+f*.07),R(6),12);x.fill();
+ // kabut sebagai lapisan solid yang nanti di-dither
+ x.fillStyle=mix('#d8c48c','#6e4426',f);x.globalAlpha=.1+f*.35;x.fillRect(0,0,lw,lh*.8);x.globalAlpha=1;
+ const im=x.getImageData(0,0,lw,lh),d=im.data,pal=f>.85?[0,2,3,8,9,6].map(i=>PAL[i]):PAL;
+ for(let j=0;j<lh;j++)for(let i=0;i<lw;i++){const q=(j*lw+i)*4,t=(BAY[(j%4)*4+i%4]/16-.5)*34;let best=0,bd=1e9;for(let k=0;k<pal.length;k++){const p=pal[k],dr=d[q]+t-p[0],dg=d[q+1]+t-p[1],db=d[q+2]+t-p[2],dd=dr*dr*.3+dg*dg*.59+db*db*.11;if(dd<bd){bd=dd;best=k;}}d[q]=pal[best][0];d[q+1]=pal[best][1];d[q+2]=pal[best][2];}
+ x.putImageData(im,0,0);ctx.imageSmoothingEnabled=false;ctx.drawImage(o,0,0,w,h);
+}
+
+// ---------- C: halftone kliping ----------
+function drawC(ctx,w,h,f){
+ const o=document.createElement('canvas');o.width=Math.round(w);o.height=Math.round(h);const x=o.getContext('2d'),c=cam(w,h),V=vis(f);
+ const g=x.createLinearGradient(0,0,0,c.hor);g.addColorStop(0,`hsl(0,0%,${lerp(80,22,f)}%)`);g.addColorStop(1,`hsl(0,0%,${lerp(97,55,f)}%)`);x.fillStyle=g;x.fillRect(0,0,w,c.hor+1);
+ x.fillStyle=`hsl(0,0%,${lerp(100,70,f)}%)`;x.beginPath();x.arc(w*.68,c.hor*.42,w*.08,0,7);x.fill();
+ x.fillStyle=`hsl(0,0%,${lerp(35,50,f)}%)`;for(const t of SC.far){const xx=t.u*w,hh=h*.02*t.h;x.fillRect(xx-1,c.hor-hh,2,hh);x.beginPath();x.ellipse(xx,c.hor-hh,hh*.6,hh*.25,0,0,7);x.fill();}
+ const gg=x.createLinearGradient(0,c.hor,0,h);gg.addColorStop(0,`hsl(0,0%,${lerp(70,45,f)}%)`);gg.addColorStop(1,'hsl(0,0%,28%)');x.fillStyle=gg;x.fillRect(0,c.hor,w,h);
+ road(x,c);const rg=x.createLinearGradient(0,c.hor,0,h);rg.addColorStop(0,`hsl(0,0%,${lerp(80,50,f)}%)`);rg.addColorStop(1,'hsl(0,0%,62%)');x.fillStyle=rg;x.fill();
+ for(const pm of SC.palms){if(pm.z>V)continue;const k=clamp((V-pm.z)/(V*.4)),l=lerp(lerp(85,50,f),8,k);palm(x,c,pm,{trunk:`hsl(0,0%,${l}%)`,frond:`hsl(0,0%,${l}%)`,fw:.12});}
+ let dz=null;if(15<V)dz=dozer(x,c,1,15,'hsl(0,0%,45%)','hsl(0,0%,12%)');log(x,c,-1,8,'hsl(0,0%,15%)');runner(x,c,0,'#000');
+ x.fillStyle=`hsla(0,0%,${lerp(90,40,f)}%,${.1+f*.4})`;x.fillRect(0,0,w,h*.85);
+ const d=x.getImageData(0,0,o.width,o.height).data;
+ ctx.fillStyle='#d9d4c5';ctx.fillRect(0,0,w,h);ctx.fillStyle='#1c1a17';
+ const st=Math.max(3.6,w/62),ang=.26,ca=Math.cos(ang),sa=Math.sin(ang),gain=1+f*.5;
+ for(let v=-h;v<h*2;v+=st)for(let u=-w;u<w*2;u+=st){const X=u*ca-v*sa,Y=u*sa+v*ca;if(X<0||Y<0||X>=w||Y>=h)continue;const q=((Y|0)*o.width+(X|0))*4,dk=clamp((1-d[q]/255)*gain);if(dk<.04)continue;ctx.beginPath();ctx.arc(X,Y,st*.7*Math.sqrt(dk),0,7);ctx.fill();}
+ if(dz){ctx.strokeStyle='#d7261e';ctx.lineCap='round';const r=R(2);for(let k=0;k<2;k++){ctx.lineWidth=2.4-k;ctx.beginPath();for(let a=0;a<=7.2;a+=.25){const rr=dz.r*(1+.12*r()),xx=dz.x+Math.cos(a)*rr*1.15,yy=dz.y+Math.sin(a)*rr*.9;a?ctx.lineTo(xx,yy):ctx.moveTo(xx,yy);}ctx.stroke();}}
+ ctx.strokeStyle='rgba(28,26,23,.12)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(0,h*.55);ctx.lineTo(w,h*.5);ctx.stroke();
+}
+
+// ---------- D: siluet datar ----------
+function drawD(ctx,w,h,f){
+ const c=cam(w,h),V=vis(f),sky=mix('#b9c4be','#8e8266',f),L1=mix('#8e9a8c','#7d745d',f),L2=mix('#5f6a5c','#5c5546',f),L3='#2e2a22',BK='#0e0d0b';
+ ctx.fillStyle=sky;ctx.fillRect(0,0,w,h);
+ ctx.fillStyle=f<.3?mix('#efe8c8','#d9b07a',f/.3):mix('#d9b07a','#b3231b',clamp((f-.3)/.4));ctx.beginPath();ctx.arc(w*.66,c.hor*.5,w*(.05+f*.025),0,7);ctx.fill();
+ ctx.fillStyle=L1;ctx.fillRect(0,c.hor,w,h);
+ ctx.strokeStyle=L1;ctx.fillStyle=L1;for(const t of SC.far){const x=t.u*w,hh=h*.024*t.h;ctx.fillRect(x-.8,c.hor-hh,1.6,hh);ctx.beginPath();ctx.ellipse(x,c.hor-hh,hh*.6,hh*.26,0,0,7);ctx.fill();}
+ const zg=c.p(0,0,22).y,zn=c.p(0,0,7).y;ctx.fillStyle=L2;ctx.fillRect(0,zg,w,h);ctx.fillStyle=L3;ctx.fillRect(0,zn,w,h);
+ ctx.save();road(ctx,c);ctx.clip();ctx.fillStyle=mix(L1,sky,.35);ctx.fillRect(0,c.hor,w,h);ctx.fillStyle=mix(L2,L1,.4);ctx.fillRect(0,zg,w,h);ctx.fillStyle=mix(L3,L2,.4);ctx.fillRect(0,zn,w,h);ctx.restore();
+ for(const pm of SC.palms){if(pm.z>V)continue;const col=pm.z>22?L1:pm.z>7?L2:pm.z>2.5?L3:BK;palm(ctx,c,pm,{trunk:col,frond:col,fw:.1,droop:.55});}
+ if(f>.5){ctx.fillStyle=L2;for(const[lx,z]of[[-2.6,13],[2.4,17]]){const b=c.p(lx,0,z),s=b.s;ctx.fillRect(b.x-.11*s,b.y-.85*s,.22*s,.85*s);ctx.beginPath();ctx.arc(b.x,b.y-1*s,.12*s,0,7);ctx.fill();}}
+ if(15<V+6){const fade=clamp((V+6-15)/8);ctx.globalAlpha=fade;dozer(ctx,c,1,15,L2,L2);ctx.globalAlpha=1;const g=c.p(LW,.95,15),s=g.s,w2=LW*.9*s;ctx.fillStyle='#f3e7b0';ctx.beginPath();ctx.arc(g.x-w2*.3,g.y+.1*s,Math.max(1.4,.05*s),0,7);ctx.arc(g.x+w2*.3,g.y+.1*s,Math.max(1.4,.05*s),0,7);ctx.fill();}
+ log(ctx,c,-1,8,L3);runner(ctx,c,0,BK);
+ ctx.fillStyle='#b3231b';flames(ctx,w,h,h*(.02+f*.07),R(8),22);ctx.fill();
+}
+
+// ---------- E: brosur terbakar ----------
+function drawE(ctx,w,h,f){
+ const c=cam(w,h),V=vis(f);
+ // dunia asli
+ ctx.fillStyle='#14110f';ctx.fillRect(0,0,w,h);const sg=ctx.createLinearGradient(0,0,0,c.hor);sg.addColorStop(0,'#1d1512');sg.addColorStop(1,'#5a2a18');ctx.fillStyle=sg;ctx.fillRect(0,0,w,c.hor);
+ ctx.fillStyle='#24190f';ctx.fillRect(0,c.hor,w,h);road(ctx,c);ctx.fillStyle='#2e231b';ctx.fill();
+ for(const pm of SC.palms){if(pm.z>V)continue;palm(ctx,c,pm,{trunk:'#0b0908',frond:'#0b0908',fw:.08,droop:.6,n:7});}
+ if(15<V)dozer(ctx,c,1,15,'#2a221c','#0b0908','#ffd45c');log(ctx,c,-1,8,'#0b0908');runner(ctx,c,0,'#000');
+ ctx.fillStyle='#e8623a';flames(ctx,w,h,h*(.05+f*.1),R(4),18);ctx.fill();
+ const r0=R(12);ctx.fillStyle='#e8623a';for(let i=0;i<60;i++){const y=r0()*h,x=r0()*w;ctx.globalAlpha=.3+r0()*.7;ctx.fillRect(x,y,1.5,1.5);}ctx.globalAlpha=1;
+ // garis bakar
+ const base=h*(.9-f*.78),r=R(21),pts=[];for(let i=0;i<=40;i++){pts.push([i/40*w,base+(r()-.5)*h*.05+Math.sin(i*.7)*h*.012]);}
+ ctx.save();ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(w,0);for(let i=pts.length-1;i>=0;i--)ctx.lineTo(pts[i][0],pts[i][1]);ctx.closePath();ctx.clip();
+ ctx.fillStyle='#e3f4ea';ctx.fillRect(0,0,w,h);
+ const sx=w*.7,sy=c.hor*.45,sr=w*.08;ctx.strokeStyle='#ffd45c';ctx.lineWidth=4;ctx.lineCap='round';for(let i=0;i<10;i++){const a=i/10*Math.PI*2;ctx.beginPath();ctx.moveTo(sx+Math.cos(a)*sr*1.35,sy+Math.sin(a)*sr*1.35);ctx.lineTo(sx+Math.cos(a)*sr*1.8,sy+Math.sin(a)*sr*1.8);ctx.stroke();}
+ ctx.fillStyle='#ffd45c';ctx.beginPath();ctx.arc(sx,sy,sr,0,7);ctx.fill();ctx.strokeStyle='#14322a';ctx.lineWidth=1.6;ctx.beginPath();ctx.arc(sx,sy+sr*.1,sr*.45,.3,Math.PI-.3);ctx.stroke();ctx.fillStyle='#14322a';ctx.beginPath();ctx.arc(sx-sr*.3,sy-sr*.2,1.6,0,7);ctx.arc(sx+sr*.3,sy-sr*.2,1.6,0,7);ctx.fill();
+ ctx.fillStyle='#bfe6cd';ctx.beginPath();ctx.ellipse(w*.2,c.hor+8,w*.45,40,0,Math.PI,0);ctx.ellipse(w*.85,c.hor+10,w*.4,34,0,Math.PI,0);ctx.fill();
+ ctx.fillStyle='#a8ddb9';ctx.fillRect(0,c.hor,w,h);road(ctx,c);ctx.fillStyle='#f6eedc';ctx.fill();
+ ctx.strokeStyle='#ffffff';for(const lx of[-.5,.5])for(let z=0;z<60;z+=4){const a=c.p(lx*LW,0,z),b=c.p(lx*LW,0,z+1.8);ctx.lineWidth=Math.max(1,.05*a.s);ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();}
+ for(const pm of SC.palms){const b=c.p(pm.x,0,pm.z),t=c.p(pm.x,pm.h*.8,pm.z),s=b.s;ctx.strokeStyle='#c99a6b';ctx.lineWidth=Math.max(1.2,.14*s);ctx.beginPath();ctx.moveTo(b.x,b.y);ctx.lineTo(t.x,t.y);ctx.stroke();ctx.fillStyle=pm.seed>.5?'#3bae6e':'#2f9a5e';ctx.beginPath();ctx.arc(t.x,t.y,Math.max(2,.6*s),0,7);ctx.fill();ctx.fillStyle='rgba(255,255,255,.35)';ctx.beginPath();ctx.arc(t.x-.2*s,t.y-.2*s,Math.max(.8,.18*s),0,7);ctx.fill();}
+ ctx.restore();
+ ctx.lineJoin='round';ctx.lineCap='round';ctx.strokeStyle='#2a140b';ctx.lineWidth=7;ctx.beginPath();pts.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.stroke();ctx.strokeStyle='#e8623a';ctx.lineWidth=1.6;ctx.stroke();
+}
+
+const DRAW={A:drawA,B:drawB,C:drawC,D:drawD,E:drawE};
+function paint(cv){const r=cv.getBoundingClientRect();if(!r.width)return;const dpr=Math.min(2,window.devicePixelRatio||1);cv.width=Math.round(r.width*dpr);cv.height=Math.round(r.height*dpr);const ctx=cv.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);try{DRAW[cv.dataset.dir](ctx,r.width,r.height,+cv.dataset.f);}catch(e){console.error(e);}}
+function all(){document.querySelectorAll('canvas[data-dir]').forEach(paint);}
+let tm;window.addEventListener('resize',()=>{clearTimeout(tm);tm=setTimeout(all,150);});
+(document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve()).then(all);all();
+</script>

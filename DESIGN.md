@@ -21,6 +21,7 @@ Cara memberi masukan: tandai ID dengan ✅ pakai / ❌ buang / ✏️ ubah, atau
 | Batasan | Tanpa gore. Tanpa nama perusahaan atau orang nyata. Perusahaan fiktif: **PT Hijau Lestari Abadi Tbk (HLA)** |
 | Fakta nyata di game over | **Ya**, dengan sumber (wajib diverifikasi ulang sebelum rilis) |
 | Ditunda | Mode Pelaku ("Direktur"), versi 2 |
+| Arah visual | **Kabut** (v0.2): siluet datar berlapis, asap abu-kuning, satu warna merah. Moodboard di `design/` |
 
 ---
 
@@ -47,7 +48,7 @@ Cara memberi masukan: tandai ID dengan ✅ pakai / ❌ buang / ✏️ ubah, atau
 ## C. Collectible & Power-up (versi korban)
 | ID | Elemen | Status |
 |---|---|---|
-| C1 | 🌱 Bibit pohon: poin "bibit diselamatkan" | ✅ |
+| C1 | Tandan buah sawit (brondolan): poin "brondolan dipungut". Tiap 15: "memungut brondolan dapat dipidana" | ✅ |
 | C2 | 😷 Masker bantuan: ISPU −35. Teks: "1 lembar untuk 1 keluarga" | ✅ |
 | C3 | 📄 Dokumen tanah adat: koleksi langka, tidak berguna di hadapan hukum | ⏳ |
 | C4 | 🏥 Posko darurat: power-up yang tutup saat didatangi | ⏳ |
@@ -59,6 +60,7 @@ Cara memberi masukan: tandai ID dengan ✅ pakai / ❌ buang / ✏️ ubah, atau
 | D1 | Kayu tebangan | Lompat (kalau tertabrak, tersandung) | ✅ |
 | D2 | Spanduk "ZERO BURNING ✓" melintang | Merunduk | ✅ |
 | D3 | Buldoser PT HLA | Pindah jalur (mematikan) | ✅ |
+| D3b | Ekskavator PT HLA yang sedang menggali | Pindah jalur (mematikan) | ✅ |
 | D4 | Gambut terbakar dari dalam (retakan menyala, berasap) | Lompat (mematikan) | ✅ |
 | D5 | Kanal pengering yang dibuat perusahaan | Lompat | ⏳ |
 | D6 | Pagar konsesi baru di atas tanah adat | ⏳ | ⏳ |
@@ -136,7 +138,7 @@ Cara memberi masukan: tandai ID dengan ✅ pakai / ❌ buang / ✏️ ubah, atau
 | K11 | Pengumuman toa: "warga diimbau tetap di dalam rumah" | ⏳ |
 | K12 | Melodi memudar, tinggal dengung | ✅ |
 | K13 | Suara burung panik yang berhenti | ✅ (sederhana) |
-| K14 | Kamera melirik ke belakang ke arah api | ⏳ |
+| K14 | Tokoh menoleh ke belakang ke arah api (kamera belum) | ✅ (sebagian) |
 | K16 | Getaran HP saat tersandung / mati | ✅ |
 | K18 | Momen sunyi palsu sebelum api loncat | ⏳ |
 | K19 | Ticker tetap ceria saat layar paling mengerikan | ✅ |
