@@ -170,7 +170,7 @@ const lsSet=(k,v)=>{try{localStorage.setItem(k,v);}catch(e){}};
 const cv=$('c'),ctx=cv.getContext('2d');
 let W=0,H=0,HOR=0,FOC=0,DPR=1;
 const LW=0.8,CAMH=1.7,CAMZ=3.2;
-function resize(){const r=cv.getBoundingClientRect();DPR=Math.min(2,window.devicePixelRatio||1);W=r.width;H=r.height;cv.width=Math.round(W*DPR);cv.height=Math.round(H*DPR);ctx.setTransform(DPR,0,0,DPR,0,0);HOR=H*0.36;FOC=Math.min(W*1.3,H*0.8);farKey='';if(window.FIRE_RESET)FIRE_RESET();}
+function resize(){const r=cv.getBoundingClientRect();DPR=Math.min(1.5,window.devicePixelRatio||1);VIGN=null;W=r.width;H=r.height;cv.width=Math.round(W*DPR);cv.height=Math.round(H*DPR);ctx.setTransform(DPR,0,0,DPR,0,0);HOR=H*0.36;FOC=Math.min(W*1.3,H*0.8);farKey='';if(window.FIRE_RESET)FIRE_RESET();}
 window.addEventListener('resize',resize);
 function proj(x,y,z){const s=FOC/(z+CAMZ);return{x:W/2+x*s,y:HOR+(CAMH-y)*s,s};}
 
@@ -499,7 +499,7 @@ function palmDraw(d,z,dead,fv){const b=proj(d.x,0,z),tp=proj(d.x+(d.seed-.5)*.3,
  return{b,tp};}
 // api di tajuk/pangkal sawit yang terbakar, dan asap yang mengepul ke atas
 function palmFire(x,y,s,amt,seed,fv){if(amt<=0||s<1.5)return;const t=S.t,fk=.8+.2*Math.sin(t*13+seed*30);
- if(!LOWQ){ctx.save();ctx.globalCompositeOperation='lighter';const r=1.3*s*amt,g=ctx.createRadialGradient(x,y-.3*s,0,x,y-.3*s,r);g.addColorStop(0,`rgba(230,90,30,${.35*fv*fk})`);g.addColorStop(1,'rgba(230,90,30,0)');ctx.fillStyle=g;ctx.fillRect(x-r,y-.3*s-r,r*2,r*2);ctx.restore();}
+ {ctx.save();ctx.globalCompositeOperation='lighter';const r=1.3*s*amt,g=ctx.createRadialGradient(x,y-.3*s,0,x,y-.3*s,r);g.addColorStop(0,`rgba(230,90,30,${.35*fv*fk})`);g.addColorStop(1,'rgba(230,90,30,0)');ctx.fillStyle=g;ctx.fillRect(x-r,y-.3*s-r,r*2,r*2);ctx.restore();}
  ctx.globalAlpha=fv*clamp(amt*1.4);
  for(const[col,k]of[[C.redDeep,1],[C.red,.62],['#e8823a',.32]]){ctx.fillStyle=col;ctx.beginPath();
   for(let i=0;i<6;i++){const w=.13*s*k*(1+((i*1.7+seed*9)%1)*.6),xx=x+(i-2.5)*.09*s*k,hh=.95*s*k*amt*(.55+.45*Math.abs(Math.sin(t*(7+i)+seed*20+i*1.3)));
@@ -796,14 +796,17 @@ function roadPath(c){const a=proj(-1.55*LW,0,90),b=proj(1.55*LW,0,90),d=proj(1.5
 
 // grain film
 const grainCv=document.createElement('canvas');grainCv.width=grainCv.height=160;(()=>{const g=grainCv.getContext('2d'),im=g.createImageData(160,160);for(let i=0;i<im.data.length;i+=4){const v=Math.random()<.5?0:255;im.data[i]=im.data[i+1]=im.data[i+2]=v;im.data[i+3]=Math.random()*20;}g.putImageData(im,0,0);})();
-let grainPat=null;
+let VIGN=null;
+function vignOf(){if(VIGN)return VIGN;const c=document.createElement('canvas');c.width=Math.ceil(W+80);c.height=Math.ceil(H+80);const g=c.getContext('2d');
+ const vg=g.createRadialGradient(W/2+40,H*.55+40,W*.3,W/2+40,H*.55+40,H*.78);vg.addColorStop(0,'rgba(13,12,10,0)');vg.addColorStop(1,'rgba(13,12,10,1)');g.fillStyle=vg;g.fillRect(0,0,c.width,c.height);
+ g.fillStyle=g.createPattern(grainCv,'repeat');g.fillRect(0,0,c.width,c.height);g.fillRect(0,0,c.width,c.height);return VIGN=c;}
 // gumpalan kabut lembut: sprite radial yang diwarnai, di-cache per warna
 const PUFFS=new Map();
 function puffOf(c){const key=c.map(v=>(v/6|0)).join();let p=PUFFS.get(key);if(p)return p;if(PUFFS.size>40)PUFFS.clear();
  p=document.createElement('canvas');p.width=p.height=96;const g=p.getContext('2d'),gr=g.createRadialGradient(48,48,0,48,48,48);
  gr.addColorStop(0,rgb(c,1));gr.addColorStop(.45,rgb(c,.5));gr.addColorStop(1,rgb(c,0));g.fillStyle=gr;g.fillRect(0,0,96,96);PUFFS.set(key,p);return p;}
 // kabut rendah yang hanyut: lapisan belakang (di antara pohon) dan depan (melintas di depan kamera)
-function drawMist(f,ra,front){const col=puffOf(mixc(HZ,C.near,front?.3:.06)),n=front?5:11;
+function drawMist(f,ra,front){const col=puffOf(mixc(HZ,C.near,front?.3:.06)),n=front?3:11;
  for(let i=0;i<n;i++){const r=(i*.618034+.13)%1,d=front?1:r,y=front?H*(.62+r*.36):HOR+(H-HOR)*(.01+Math.pow(d,1.7)*.55),
   w=front?W*(1.1+r*.6):W*(.3+d*1.1),h=w*(front?.22:.13),sp=front?(26+r*30):(5+d*24),dir=i%2?1:-1,span=W+w,
   x=(((r*span*3+S.t*sp*dir)%span)+span)%span-w/2;
@@ -860,7 +863,7 @@ function render(){
   if(it.player){if(mode!=='over')drawRunner();continue;}
   if(it.ghost){drawPerson(S.ghost.x,z,fogVis(z)*clamp(Math.min(S.ghost.life,.9-S.ghost.life)*4));continue;}
   if(it.o){const o=it.o;if(o.type==='kayu')drawLog(o,z);else if(o.type==='palang')drawBanner(o,z);else if(o.type==='bulldozer')drawDozer(o,z);else if(o.type==='ekskavator')drawExc(o,z);else if(o.type==='gambut')drawGambut(o,z);else drawPickup(o,z);continue;}
-  const d=it.d,fv=fogVis(z);if(fv<=0||(LOWQ&&d.row===2))continue;
+  const d=it.d,fv=fogVis(z);if(fv<=0)continue;
   if(d.kind==='tunggul')drawStump(d,z);
   else if(d.kind==='baliho')drawBaliho(d,z);
   else if(d.kind==='siluet'&&S.ispu>=300&&z>5)drawPerson(d.x,z,fv*.85);
@@ -869,7 +872,7 @@ function render(){
     if(z<SMOKE_NEAR)palmSmoke(P.tp.x,P.tp.y,P.b.s,amt,d.seed,fv);
     if(d.burn<share*.5)fire(P.tp.x,P.tp.y+.05*P.b.s,P.b.s,amt,d.seed,fv);if(d.burn<share*.75)fire(P.b.x,P.b.y,P.b.s*.7,amt*.8,d.seed+.3,fv);}}
  }
- if(!LOWQ)drawMist(f,ra,true);
+ drawMist(f,ra,true);
  // hujan
  if(ra>0){ctx.strokeStyle=`rgba(225,230,232,${.3*ra})`;ctx.lineWidth=1;ctx.beginPath();for(let i=0;i<110;i++){const x=(i*73.13+S.t*240)%W,y=(i*131.7+S.t*950)%H;ctx.moveTo(x,y);ctx.lineTo(x-5,y+16);}ctx.stroke();}
  // api pengejar: dua lapis lidah api datar
@@ -879,8 +882,8 @@ function render(){
  for(const e of S.ash){ctx.save();ctx.translate(e.x,e.y);ctx.rotate(e.a);ctx.globalAlpha=e.ember?clamp(e.l):clamp(e.l/2)*.55;ctx.fillStyle=e.ember?C.red:'#0d0c0a';ctx.fillRect(-e.r,-e.r*.35,e.r*2,e.r*.7);ctx.restore();}
  ctx.globalAlpha=1;
  // vignette berdenyut (K4), lalu grain
- const vg=ctx.createRadialGradient(W/2,H*.55,W*.3,W/2,H*.55,H*.78);vg.addColorStop(0,'rgba(13,12,10,0)');vg.addColorStop(1,`rgba(13,12,10,${clamp(.12+f*.5+S.pulse*.18)})`);ctx.fillStyle=vg;ctx.fillRect(-20,-20,W+40,H+40);
- if(!grainPat)grainPat=ctx.createPattern(grainCv,'repeat');ctx.save();ctx.translate(rand(-80,0),rand(-80,0));ctx.fillStyle=grainPat;ctx.fillRect(0,0,W+160,H+160);ctx.restore();
+ // satu lapisan siap pakai (vignette + grain), digeser acak sedikit supaya grain tetap hidup
+ ctx.globalAlpha=clamp(.12+f*.5+S.pulse*.18);ctx.drawImage(vignOf(),-40+rand(-20,20),-40+rand(-20,20));ctx.globalAlpha=1;
  if(dying){ctx.fillStyle=`rgba(13,12,10,${clamp(S.dieT/1.6)*.85})`;ctx.fillRect(-20,-20,W+40,H+40);}
  ctx.restore();
 }
@@ -896,7 +899,7 @@ const FLAME=(()=>{const c=document.createElement('canvas');c.width=48;c.height=1
 const FIRE={p:[],sp:[],sm:[],acc:0};
 window.FIRE_RESET=()=>{FIRE.p.length=0;FIRE.sp.length=0;FIRE.sm.length=0;};
 function fireH(){return(mode==='dying'||mode==='over')&&S.cause==='api'?1.5:fireHeat();}
-function updFire(dt){const heat=fireH(),n=LOWQ?.55:1;
+function updFire(dt){const heat=fireH(),n=1;
  FIRE.acc+=dt*(W/3.2)*(1+heat*1.6)*n;
  while(FIRE.acc>1){FIRE.acc--;const life=rand(.35,.7),sz=H*rand(.05,.1)*(.65+heat*.55);FIRE.p.push({x:rand(-20,W+20),y:H+sz*.25,vx:rand(-10,10),vy:-H*rand(.008,.025)*(.6+heat*.6),life,l:life,sz,ph:Math.random()*7});}
  for(const f of FIRE.p){f.l-=dt;f.ph+=dt*9;f.x+=(f.vx+Math.sin(f.ph)*28)*dt;f.y+=f.vy*dt;f.vy*=1-dt*.6;}
@@ -948,10 +951,8 @@ function overFx(dt){const cv=OFX.cv||(OFX.cv=$('overFx'));if(!cv)return;const r=
 // ================= Loop =================
 let last=performance.now();
 // mode grafis otomatis: bila frame rate rendah >2 detik, kurangi efek berat
-let LOWQ=false,slowT=0,ema=1/60;
-function quality(rawDt){ema+=(rawDt-ema)*.05;if(!LOWQ){slowT=ema>1/35?slowT+rawDt:0;if(slowT>2){LOWQ=true;farKey='';}}}
 function frame(ts){
- const raw=Math.max(0,(ts-last)/1000),dt=Math.min(.033,raw);last=ts;if(mode==='play'&&raw<.5)quality(raw);
+ const raw=Math.max(0,(ts-last)/1000),dt=Math.min(.033,raw);last=ts;
  if(mode==='play')update(dt);
  else if(mode==='dying'){S.dieT+=dt;S.shake=Math.max(0,S.shake-dt);S.fire=Math.min(1.4,S.fire+dt);updAsh(dt);if(S.dieT>1.6)showOver();}
  else if(mode==='menu'||mode==='over'){S.t+=dt;S.dist+=dt*3;S.ph+=dt*2;updAsh(dt);recycleDecor();if(mode==='over')overFx(dt);}
