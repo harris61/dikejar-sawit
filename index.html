@@ -60,7 +60,6 @@ canvas{display:block;width:100%;height:100%}
 #start{color:var(--ink);justify-content:flex-start;padding-top:24%}
 #start .a{font:100 40px/1 var(--f-num);letter-spacing:.42em;padding-left:.42em}
 #start .b{font:800 86px/.86 var(--f-num);letter-spacing:.03em}
-#start .c{font:italic 400 17px/1 var(--f-sub);margin-top:12px;opacity:.8}
 #start .go{position:absolute;bottom:calc(env(safe-area-inset-bottom) + 64px);left:0;right:0;display:flex;flex-direction:column;align-items:center;gap:16px;color:var(--pale)}
 #start .help{font:400 11px/1.7 var(--f-lab);letter-spacing:.06em;opacity:.75}
 #start .help kbd{font:600 10px/1 var(--f-lab);border:1px solid currentColor;padding:1px 5px;border-radius:2px}
@@ -108,14 +107,13 @@ canvas{display:block;width:100%;height:100%}
    <div class="r"><div id="dist">0 m</div><span class="lab" id="year">Kemarau 2026</span></div>
   </div>
   <div id="bar"><div id="barFill"></div></div>
-  <div class="meta"><span id="bibit">Brondolan 0</span><span id="hot">Hotspot 0</span></div>
+  <div class="meta"><span id="air">Air 0 L</span><span id="hot">Hotspot 0</span></div>
  </div>
  <div id="sub"><span id="subWho"></span><div id="subText"></div></div>
 
  <div id="start" class="ov">
   <div class="a">DIKEJAR</div>
   <div class="b">ASAP</div>
-  <div class="c">Asap membunuhmu!</div>
   <div class="go">
    <button class="btn" id="btnStart">Mulai lari</button>
    <div class="help">Geser ← → pindah jalur · ↑ lompat · ↓ meluncur<br><kbd>A</kbd> <kbd>D</kbd> jalur · <kbd>W</kbd> lompat · <kbd>S</kbd> meluncur · gunakan headphone</div>
@@ -137,7 +135,7 @@ canvas{display:block;width:100%;height:100%}
   </div>
   <div class="o-stats">
    <div><b id="sDist">0</b><span>meter</span></div>
-   <div><b id="sBibit">0</b><span>brondolan</span></div>
+   <div><b id="sAir">0</b><span>liter air</span></div>
    <div><b id="sYear">1</b><span>kemarau</span></div>
    <div><b id="sIspu">0</b><span>ISPU</span></div>
   </div>
@@ -201,6 +199,11 @@ const TICK=[
  [["20 korporasi ditetapkan tersangka karhutla per 29 Oktober 2026.", "Bareskrim via Garuda TV", "https://garuda.tv/perusahaan-asal-malaysia-singapura-dan-korsel-jadi-tersangka-karhutla/"],["245 orang ditetapkan tersangka dari 287 laporan polisi.", "Bareskrim via Garuda TV", "https://garuda.tv/perusahaan-asal-malaysia-singapura-dan-korsel-jadi-tersangka-karhutla/"],["Per 21 Oktober: 2.775 penerbangan terdampak asap.", "Kemenhub via Citra Sumsel", "https://www.citrasumsel.com/nasional/603149620/kabut-asap-karhutla-ganggu-penerbangan-40-jadwal-pesawat-batal-hingga-25-oktober-2026"],"Situasi terkendali.","Direksi SJP sedang berobat ke Singapura.","Situasi terkendali."],
 ];
 const TICK_WHO=[["SiPongi KLHK", "SiPongi KLHK", "Juru bicara SJP", "Katadata", "Juru bicara SJP"], ["SiPongi KLHK", "SiPongi KLHK", "Sipongi Kemenhut", "Juru bicara SJP", "Pemerintah"], ["Pemkot Pontianak", "Pemprov Kaltim", "Siaran berita", "Pemerintah"], ["Kemenkes", "Kemenkes", "Kemenkes", "Diplomasi", "Juru bicara SJP"], ["Bareskrim", "Bareskrim", "Kemenhub", "Pemerintah", "Juru bicara SJP", "Pemerintah"]];
+const AIR_LINES=[
+ ["BPBD", "Bantuan air bersih: 1 jeriken per KK. Antre di kantor desa."],
+ ["Juru bicara SJP", "Kanal SJP berfungsi optimal. Gambut kering, siap tanam."],
+ ["Iklan", "Sumur warga kering. Air mineral SJP tersedia di minimarket terdekat."],
+];
 const TOASTS=[
  ["Bursa", "Saham SJP naik 3%."],
  ["Kalender", "Rapat koordinasi penanganan karhutla dijadwalkan saat situasi sudah kondusif."],
@@ -215,12 +218,12 @@ const TOASTS=[
 ];
 const TIER_TOAST=["","Kualitas udara sedang. Tidak perlu khawatir.","Kualitas udara tidak sehat. Masker dibagikan terbatas.","Kualitas udara sangat tidak sehat. Situasi terkendali.","Kualitas udara berbahaya. Situasi terkendali."];
 const CAUSE={
- ispa:"Kamu meninggal karena ISPA<small>Asap mengejarmu!</small>",
+ ispa:"Kamu meninggal karena ISPA",
  bulldozer:"Kamu tertabrak bulldozer SJP<small>Perusahaan melaporkan sedikit insiden dengan “batang pohon”.</small>",
  ekskavator:"Kamu terlindas ekskavator SJP<small>“Pohon” sedang dilakukan land clearing untuk penanaman.</small>",
  gambut:"Kamu terperosok ke gambut yang terbakar<small>Tidak ada apa-apa di sini, hanya orang<s>utan</s> terbakar.</small>",
  baliho:"Kamu menabrak spanduk zero burning<small>Zero burning. Zero victim.</small>",
- api:"Api menyusulmu<small>Api membunuhmu!</small>",
+ api:"Api menyusulmu",
 };
 const FACTS=[
  ["Sepanjang Januari–Agustus 2026, 202.010 hektare lahan terbakar di Indonesia, naik 69% dari periode yang sama tahun sebelumnya.", "SiPongi KLHK via Tempo", "https://www.tempo.co/lingkungan/hektare-terbakar-karhutla-2026-2283887"],
@@ -290,7 +293,7 @@ function aMaster(v,t=.6){if(AU.ac)AU.m.gain.setTargetAtTime(v,AU.ac.currentTime,
 // ================= State =================
 let S,mode='menu';
 function reset(){
- S={t:0,dist:0,speed:13,lane:0,px:0,py:0,vy:0,slide:0,ispu:20,bibit:0,objs:[],decor:[],spawnAt:42,
+ S={t:0,dist:0,speed:13,lane:0,px:0,py:0,vy:0,slide:0,ispu:20,air:0,objs:[],decor:[],spawnAt:42,
   fire:0,lastStumble:-99,shake:0,rain:0,nextRain:rand(70,85),year:2026,years:1,tier:0,hot:12,
   nextToast:rand(12,18),nextTick:rand(5,8),ash:[],ghost:null,ghostT:6,plane:null,pulse:0,dieT:0,cause:null,ph:0,land:0,coughT:0,lookT:0,nextLook:rand(5,8)};
  for(const side of[-1,1])for(const[row,gap]of[[0,[2.2,3.6]],[1,[1.8,3]],[2,[1.6,2.6]]])for(let wz=1+row*.9;wz<92;wz+=rand(gap[0],gap[1]))S.decor.push(newDecor(side,wz,row));
@@ -318,7 +321,7 @@ function spawnRow(wz){
  if(Math.random()<.8){
   const isMask=Math.random()<.09;
   if(isMask)S.objs.push({type:'masker',lane:free,wz:wz-rand(2,5),len:0,seed:Math.random()});
-  else for(let k=0;k<5;k++)S.objs.push({type:'bibit',lane:free,wz:wz-6+k*1.6,len:0,seed:Math.random()});
+  else if(Math.random()<.6)for(let k=0;k<3;k++)S.objs.push({type:'air',lane:free,wz:wz-5+k*1.8,len:0,seed:Math.random()});
  }
 }
 function mkCracks(){const c=[];for(let i=0;i<7;i++){let u=rand(-.4,.4),v=rand(0,2.6);const pts=[[u,v]];for(let k=0;k<3;k++){u=clamp(u+rand(-.18,.18),-.45,.45);v=clamp(v+rand(-.5,.5),0,2.6);pts.push([u,v]);}c.push(pts);}return c;}
@@ -374,7 +377,7 @@ function die(cause){
 function showOver(){
  mode='over';$('hud').classList.add('hide');
  const d=Math.floor(S.dist);$('cause').innerHTML=CAUSE[S.cause];
- $('sDist').textContent=d;$('oYear').textContent='Kemarau '+S.year;$('sBibit').textContent=S.bibit;$('sYear').textContent=S.years;$('sIspu').textContent=Math.round(S.ispu);
+ $('sDist').textContent=d;$('oYear').textContent='Kemarau '+S.year;$('sAir').textContent=S.air;$('sYear').textContent=S.years;$('sIspu').textContent=Math.round(S.ispu);
  const f=pick(FACTS);$('fact').innerHTML=`${f[0]}<small>Sumber: <a href="${f[2]}" target="_blank" rel="noopener">${f[1]} ↗</a></small>`;
  let best=+(lsGet('dikejarSawitBest')||0);
  if(d>best){best=d;lsSet('dikejarSawitBest',d);$('best').textContent='Rekor baru: '+d+' m. Tidak ada yang merayakan.';}
@@ -416,10 +419,10 @@ function update(dt){
  while(S.spawnAt<S.dist+78){spawnRow(S.spawnAt);S.spawnAt+=S.speed*.8+rand(S.speed*.45);}
  for(const o of S.objs){
   const z=o.wz-S.dist,inLane=Math.abs(S.px-o.lane)<.45;
-  if(o.type==='bibit'||o.type==='masker'){
+  if(o.type==='air'||o.type==='masker'){
    if(!o.taken&&inLane&&Math.abs(z)<.7&&S.py<1.4){o.taken=true;
-    if(o.type==='bibit'){S.bibit++;tone(880+(S.bibit%5)*60,.12,.06);}
-    else{S.ispu=Math.max(15,S.ispu-35);tone(660,.3,.1,'triangle',0,990);say('Bantuan','Masker bantuan diterima: 1 lembar untuk 1 keluarga.');}}
+    if(o.type==='air'){S.air++;S.ispu=Math.max(15,S.ispu-2);tone(880+(S.air%5)*60,.12,.06);if(S.air%10===0){const l=AIR_LINES[(S.air/10-1)%AIR_LINES.length];say(l[0],l[1]);}}
+    else{S.ispu=Math.max(15,S.ispu-35);tone(660,.3,.1,'triangle',0,990);say('Bantuan','Masker bantuan diterima: 1 lembar untuk 1 keluarga. Tidak menyaring PM2.5.');}}
    continue;}
   if(o.hit||!inLane||!(z<.35&&z+o.len>-.35))continue;
   if(o.type==='kayu'&&S.py<.5){o.hit=true;stumble();}
@@ -439,7 +442,7 @@ function update(dt){
  if(S.ghost){S.ghost.life-=dt;if(S.ghost.life<=0)S.ghost=null;}
  updAsh(dt);
  // HUD
- $('dist').textContent=Math.floor(S.dist)+' m';$('bibit').textContent='Brondolan '+S.bibit;
+ $('dist').textContent=Math.floor(S.dist)+' m';$('air').textContent='Air '+S.air+' L';
  $('ispuVal').textContent=Math.round(S.ispu);$('ispuLab').textContent='ISPU · '+TIERS[S.tier].lab;
  $('barFill').style.width=(S.ispu/5)+'%';
  $('hud').classList.toggle('danger',S.tier===4);$('hud').classList.toggle('dark',S.ispu>330);
@@ -770,19 +773,18 @@ function drawGambut(o,z){const x=o.lane*LW,hw=LW*.48,q=[proj(x-hw,0,z),proj(x+hw
 function drawPickup(o,z){const p=proj(o.lane*LW,(o.type==='masker'?.62:.45)+Math.sin(S.t*4+o.wz)*.06,z),s=p.s,fv=fogVis(z);if(fv<=0)return;
  ctx.globalAlpha=fv*.9;ctx.strokeStyle=rgb(C.pale);ctx.lineWidth=Math.max(.7,.018*s);const pr=(S.t*1.2+o.seed)%1;ctx.globalAlpha=fv*(1-pr)*.6;ctx.beginPath();ctx.arc(p.x,p.y,(.2+pr*.18)*s,0,7);ctx.stroke();
  ctx.globalAlpha=fv;ctx.fillStyle=rgb(C.pale);
- if(o.type==='bibit')drawTandan(p.x,p.y,s*1.1);
+ if(o.type==='air')drawBotol(p.x,p.y,s*1.1);
  else{ctx.beginPath();if(ctx.roundRect)ctx.roundRect(p.x-.2*s,p.y-.11*s,.4*s,.22*s,.06*s);else ctx.rect(p.x-.2*s,p.y-.11*s,.4*s,.22*s);ctx.fill();ctx.strokeStyle=rgb(C.pale);ctx.lineWidth=Math.max(.7,.02*s);ctx.beginPath();ctx.moveTo(p.x-.2*s,p.y-.06*s);ctx.lineTo(p.x-.32*s,p.y-.12*s);ctx.moveTo(p.x+.2*s,p.y-.06*s);ctx.lineTo(p.x+.32*s,p.y-.12*s);ctx.stroke();ctx.fillStyle='rgba(13,12,10,.35)';for(let k=-1;k<=1;k++)ctx.fillRect(p.x-.15*s,p.y+k*.055*s,.3*s,Math.max(.6,.012*s));}
  ctx.globalAlpha=1;}
-// Tandan buah sawit: buah lonjong rapat, hitam-ungu di atas ke merah-jingga di bawah, berduri
-const TANDAN=(()=>{const a=[];for(let r=0;r<6;r++){const y=-.15+r*.062,hw=.16*Math.sqrt(Math.max(0,1-Math.pow((y+.005)/.2,2))),n=Math.max(2,Math.round(hw*2/.068));for(let i=0;i<n;i++)a.push([-hw+(i+.5)*(2*hw/n)+(r%2?.012:-.012),y,r/5]);}return a;})();
-const FR=[hexRgb('#1f0c0a'),hexRgb('#5e140f'),hexRgb('#b3381b'),hexRgb('#d9662c')];
-function drawTandan(x,y,s){ctx.save();ctx.translate(x,y);ctx.globalAlpha*=1;
- ctx.fillStyle='#1f0c0a';ctx.beginPath();ctx.moveTo(-.025*s,-.17*s);ctx.lineTo(.025*s,-.17*s);ctx.lineTo(.035*s,-.27*s);ctx.lineTo(-.01*s,-.28*s);ctx.fill();
- ctx.fillStyle='#1f0c0a';ctx.beginPath();ctx.ellipse(0,-.005*s,.17*s,.2*s,0,0,7);ctx.fill();
- ctx.strokeStyle='#1f0c0a';ctx.lineWidth=Math.max(.6,.012*s);ctx.beginPath();for(let i=0;i<14;i++){const an=i/14*Math.PI*2,ex=Math.cos(an)*.17*s,ey=Math.sin(an)*.2*s;ctx.moveTo(ex*.9,ey*.9);ctx.lineTo(ex*1.22,ey*1.18);}ctx.stroke();
- for(const f of TANDAN){const k=f[2],c=k<.33?mixc(FR[0],FR[1],k*3):k<.66?mixc(FR[1],FR[2],(k-.33)*3):mixc(FR[2],FR[3],(k-.66)*3);
-  ctx.fillStyle=rgb(c);ctx.beginPath();ctx.ellipse(f[0]*s,f[1]*s,.036*s,.042*s,f[0]*2,0,7);ctx.fill();
-  if(s>30){ctx.fillStyle='rgba(255,236,200,.35)';ctx.beginPath();ctx.ellipse((f[0]-.01)*s,(f[1]-.014)*s,.01*s,.007*s,0,0,7);ctx.fill();}}
+// Botol air: plastik bening, isi setengah, tutup gelap
+function drawBotol(x,y,s){ctx.save();ctx.translate(x,y);ctx.rotate(Math.sin(S.t*2+x)*.12);
+ const body=()=>{ctx.beginPath();if(ctx.roundRect)ctx.roundRect(-.09*s,-.16*s,.18*s,.36*s,.05*s);else ctx.rect(-.09*s,-.16*s,.18*s,.36*s);};
+ ctx.fillStyle='rgba(225,232,232,.35)';body();ctx.fill();
+ ctx.save();body();ctx.clip();ctx.fillStyle='rgba(170,205,215,.75)';ctx.fillRect(-.1*s,.0*s,.2*s,.22*s);ctx.restore();
+ ctx.strokeStyle='rgba(240,240,232,.85)';ctx.lineWidth=Math.max(.6,.014*s);body();ctx.stroke();
+ ctx.fillStyle='rgba(225,232,232,.5)';ctx.beginPath();ctx.moveTo(-.09*s,-.14*s);ctx.lineTo(-.04*s,-.22*s);ctx.lineTo(.04*s,-.22*s);ctx.lineTo(.09*s,-.14*s);ctx.fill();
+ ctx.fillStyle='#1f2426';ctx.fillRect(-.045*s,-.28*s,.09*s,.06*s);
+ ctx.fillStyle='rgba(240,240,232,.8)';ctx.fillRect(-.09*s,-.05*s,.18*s,.04*s);
  ctx.restore();}
 function drawStump(d,z){const b=proj(d.x,0,z),s=b.s,fv=fogVis(z);ctx.globalAlpha=fv;ctx.fillStyle=rgb(dcol(z));ctx.beginPath();ctx.moveTo(b.x-.22*s,b.y);ctx.lineTo(b.x-.15*s,b.y-.75*s);ctx.lineTo(b.x-.02*s,b.y-.62*s);ctx.lineTo(b.x+.08*s,b.y-.8*s);ctx.lineTo(b.x+.16*s,b.y-.7*s);ctx.lineTo(b.x+.22*s,b.y);ctx.fill();
  ctx.fillStyle=C.red;ctx.beginPath();for(let i=0;i<3;i++){const fl=.25+.18*Math.sin(S.t*11+i*2+d.seed*9),xx=b.x-.12*s+i*.12*s;ctx.moveTo(xx-.06*s,b.y-.66*s);ctx.quadraticCurveTo(xx-.03*s,b.y-(.7+fl*.7)*s,xx,b.y-(.7+fl*1.3)*s);ctx.quadraticCurveTo(xx+.03*s,b.y-(.7+fl*.7)*s,xx+.06*s,b.y-.66*s);}ctx.fill();ctx.globalAlpha=1;}

@@ -48,8 +48,8 @@ Cara memberi masukan: tandai ID dengan ✅ pakai / ❌ buang / ✏️ ubah, atau
 ## C. Collectible & Power-up (versi korban)
 | ID | Elemen | Status |
 |---|---|---|
-| C1 | Tandan buah sawit (brondolan): poin "brondolan dipungut". Tiap 15: "memungut brondolan dapat dipidana" | ✅ |
-| C2 | 😷 Masker bantuan: ISPU −35. Teks: "1 lembar untuk 1 keluarga" | ✅ |
+| C1 | 💧 Botol air: ISPU −2 per botol. Tiap 10 botol muncul satir air bersih (BPBD, kanal SJP, air mineral SJP) | ✅ |
+| C2 | 😷 Masker bantuan (langka): ISPU −35. Teks: "1 lembar untuk 1 keluarga. Tidak menyaring PM2.5." | ✅ |
 | C3 | 📄 Dokumen tanah adat: koleksi langka, tidak berguna di hadapan hukum | ⏳ |
 | C4 | 🏥 Posko darurat: power-up yang tutup saat didatangi | ⏳ |
 | C5 | Satwa yang berlari bersamamu dan bisa diselamatkan | ⏳ |
@@ -90,7 +90,7 @@ Cara memberi masukan: tandai ID dengan ✅ pakai / ❌ buang / ✏️ ubah, atau
 |---|---|---|
 | G1 | Teks penyebab kematian (ISPA, bulldozer, gambut, spanduk, api) | ✅ |
 | G2 | "PT SJP menyampaikan duka cita mendalam dan berkomitmen pada zero burning." | ✅ |
-| G3 | Statistik: Jarak · Bibit · Kemarau dilalui · **Tersangka: 0** | ✅ |
+| G3 | Statistik: Jarak · Liter air · Kemarau dilalui · **Tersangka: 0** | ✅ |
 | G4 | Satu fakta nyata + sumber | ✅ (verifikasi ulang) |
 | G5 | Kamera berbalik ke siluet yang tersisa di asap | ⏳ |
 
