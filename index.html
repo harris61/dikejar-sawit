@@ -773,11 +773,11 @@ function drawGambut(o,z){const x=o.lane*LW,hw=LW*.48,q=[proj(x-hw,0,z),proj(x+hw
 function drawPickup(o,z){const p=proj(o.lane*LW,(o.type==='masker'?.62:.45)+Math.sin(S.t*4+o.wz)*.06,z),s=p.s,fv=fogVis(z);if(fv<=0)return;
  ctx.globalAlpha=fv*.9;ctx.strokeStyle=rgb(C.pale);ctx.lineWidth=Math.max(.7,.018*s);const pr=(S.t*1.2+o.seed)%1;ctx.globalAlpha=fv*(1-pr)*.6;ctx.beginPath();ctx.arc(p.x,p.y,(.2+pr*.18)*s,0,7);ctx.stroke();
  ctx.globalAlpha=fv;ctx.fillStyle=rgb(C.pale);
- if(o.type==='air')drawBotol(p.x,p.y,s*1.1);
+ if(o.type==='air')drawBotol(p.x,p.y,s*1.1,o.seed);
  else{ctx.beginPath();if(ctx.roundRect)ctx.roundRect(p.x-.2*s,p.y-.11*s,.4*s,.22*s,.06*s);else ctx.rect(p.x-.2*s,p.y-.11*s,.4*s,.22*s);ctx.fill();ctx.strokeStyle=rgb(C.pale);ctx.lineWidth=Math.max(.7,.02*s);ctx.beginPath();ctx.moveTo(p.x-.2*s,p.y-.06*s);ctx.lineTo(p.x-.32*s,p.y-.12*s);ctx.moveTo(p.x+.2*s,p.y-.06*s);ctx.lineTo(p.x+.32*s,p.y-.12*s);ctx.stroke();ctx.fillStyle='rgba(13,12,10,.35)';for(let k=-1;k<=1;k++)ctx.fillRect(p.x-.15*s,p.y+k*.055*s,.3*s,Math.max(.6,.012*s));}
  ctx.globalAlpha=1;}
 // Botol air: plastik bening, isi setengah, tutup gelap
-function drawBotol(x,y,s){ctx.save();ctx.translate(x,y);ctx.rotate(Math.sin(S.t*2+x)*.12);
+function drawBotol(x,y,s,seed=0){ctx.save();ctx.translate(x,y);ctx.rotate(Math.sin(S.t*2.2+seed*6.3)*.1);
  const body=()=>{ctx.beginPath();if(ctx.roundRect)ctx.roundRect(-.09*s,-.16*s,.18*s,.36*s,.05*s);else ctx.rect(-.09*s,-.16*s,.18*s,.36*s);};
  ctx.fillStyle='rgba(225,232,232,.35)';body();ctx.fill();
  ctx.save();body();ctx.clip();ctx.fillStyle='rgba(170,205,215,.75)';ctx.fillRect(-.1*s,.0*s,.2*s,.22*s);ctx.restore();
@@ -799,14 +799,20 @@ function drawBaliho(d,z){const p0=proj(d.x,0,z),p1=proj(d.x,3.1,z),p2=proj(d.x,1
  ctx.globalAlpha=1;}
 
 // ================= Lapisan jauh (cache) =================
-const FAR_Z=[70,46,30],NEAR_Z=[19,12,7,3.4];
+const FAR_Z=[70,46,30];
+// Tanah: gradasi halus menurut kedalaman (bukan pita bertingkat). road = campuran ekstra ke warna kabut untuk jalur.
+function groundGrad(c,y0,road){const g=c.createLinearGradient(0,y0,0,H);g.addColorStop(0,rgb(mixc(HZ,HZ,0)));
+ for(const z of[90,70,52,40,30,23,18,14,11,8,6,4.5,3.2,2.2,1.4,.8,.3]){const y=proj(0,0,z).y;if(y<=y0||y>=H)continue;
+  const near=.18*clamp((30-z)/12);let col=mixc(dcol(z),HZ,near);if(road)col=mixc(col,HZ,road);g.addColorStop((y-y0)/(H-y0),rgb(col));}
+ const zb=Math.max(.05,FOC*(CAMH)/(H-HOR)-CAMZ);let cb=mixc(dcol(zb),HZ,.18);if(road)cb=mixc(cb,HZ,road);g.addColorStop(1,rgb(cb));return g;}
 let farCv=document.createElement('canvas'),farX=farCv.getContext('2d'),farKey='';
 const FAR_PALMS=(()=>{const a=[];let s=7;const r=()=>(s=(s*16807)%2147483647)/2147483647;for(const z of FAR_Z){const row=[];for(let x=-30;x<=30;x+=.75+r()*.9){if(Math.abs(x)<1.55*LW+.8)continue;row.push({x,z:z+r()*2,h:2.3+r()*1.4,seed:r()});}a.push(row);}return a;})();
 function buildFar(f){
  const key=[Math.round(f*60),Math.round(VIS),Math.round(S.rain>0?1:0),W,H].join();if(key===farKey)return;farKey=key;
  farCv.width=Math.round(W*DPR);farCv.height=Math.round(H*DPR);farX.setTransform(DPR,0,0,DPR,0,0);farX.clearRect(0,0,W,H);
- FAR_Z.forEach((z,i)=>{const col=rgb(dcol(z)),yb=proj(0,0,z).y;farX.fillStyle=col;farX.fillRect(0,yb,W,H-yb);
-  farX.save();roadPath(farX);farX.clip();farX.fillStyle=rgb(mixc(dcol(z),HZ,.3));farX.fillRect(0,yb,W,H-yb);farX.restore();
+ const y0=HOR-1;farX.fillStyle=groundGrad(farX,y0,0);farX.fillRect(0,y0,W,H-y0);
+ farX.save();roadPath(farX);farX.clip();farX.fillStyle=groundGrad(farX,y0,.3);farX.fillRect(0,y0,W,H-y0);farX.restore();
+ FAR_Z.forEach((z,i)=>{const col=rgb(dcol(z));
   farX.fillStyle=col;farX.strokeStyle=col;for(const pm of FAR_PALMS[i]){const b=proj(pm.x,0,pm.z),t=proj(pm.x+(pm.seed-.5)*.3,pm.h,pm.z);palmAt(farX,b.x,b.y,t.x,t.y,b.s,pm.seed,{n:10,dead:f>.7});}});
 }
 function roadPath(c){const a=proj(-1.55*LW,0,90),b=proj(1.55*LW,0,90),d=proj(1.55*LW,0,-1.8),e=proj(-1.55*LW,0,-1.8);c.beginPath();c.moveTo(a.x,a.y);c.lineTo(b.x,b.y);c.lineTo(d.x,d.y);c.lineTo(e.x,e.y);c.closePath();}
@@ -837,7 +843,7 @@ function render(){
  ctx.save();
  if(S.shake>0)ctx.translate(rand(-1,1)*S.shake*12,rand(-1,1)*S.shake*12);
  // langit bertingkat
- for(let i=0;i<5;i++){ctx.fillStyle=rgb(mixc(SKYT,HZ,i/4));ctx.fillRect(-20,HOR*i/5-1-20*(i===0),W+40,HOR/5+2+20*(i===0));}
+ {const g=ctx.createLinearGradient(0,0,0,HOR);g.addColorStop(0,rgb(SKYT));g.addColorStop(1,rgb(HZ));ctx.fillStyle=g;ctx.fillRect(-20,-20,W+40,HOR+22);}
  // matahari dengan cincin halo datar
  const sx=W*.64,sy=HOR*.5,sr=W*(.052+f*.02),band=mixc(SKYT,HZ,.55);
  const sun=f<.35?mixc(hexRgb('#f3edd3'),hexRgb('#e2b583'),f/.35):mixc(hexRgb('#e2b583'),hexRgb('#a8231a'),(f-.35)/.35);
@@ -858,7 +864,6 @@ function render(){
  // lapisan jauh (cache)
  ctx.drawImage(farCv,0,0,W,H);
  // pita tanah dekat
- for(const z of NEAR_Z){const col=mixc(dcol(z),HZ,.18),yb=proj(0,0,z).y;ctx.fillStyle=rgb(col);ctx.fillRect(-20,yb,W+40,H-yb+20);ctx.save();roadPath(ctx);ctx.clip();ctx.fillStyle=rgb(mixc(col,HZ,.3));ctx.fillRect(-20,yb,W+40,H-yb+20);ctx.restore();}
  // marka jalur bergerak
  for(const lx of[-.5,.5])for(let z=-(S.dist%4)+2.5;z<Math.min(60,VIS);z+=4){const a=proj(lx*LW,0,z),b=proj(lx*LW,0,z+1.6);ctx.strokeStyle=rgb(mixc(dcol(z),HZ,.45));ctx.lineWidth=Math.max(.7,.035*a.s);ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();}
  // pendar api yang menjilat jalan dari belakang kamera
