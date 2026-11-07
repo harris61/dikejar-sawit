@@ -655,7 +655,7 @@ function drawRunner(){
 const STAND_POSE={P:[0,.92,0],chest:[0,1.42,.03],neck:[0,1.49,.03],shL:[-.23,1.42,.03],shR:[.23,1.42,.03],head:[0,1.64,.04],look:0,
  legs:[-1,1].map(s=>({s,hip:[s*.12,.92,0],knee:[s*.13,.49,.02],ank:[s*.13,.07,0],toe:[s*.13,.03,.13]})),
  arms:[-1,1].map(s=>({s,sh:[s*.23,1.42,.03],elb:[s*.28,1.13,0],hand:[s*.29,.87,.03]}))};
-function drawPerson(x,z,a){const b=proj(x,0,z),sc=b.s*BK;ctx.globalAlpha=a;drawFigure(ctx,STAND_POSE,p=>proj(x+p[0]*BK,p[1]*BK,z+p[2]*BK),sc,{col:rgb(dcol(z)),still:true});ctx.globalAlpha=1;}
+function drawPerson(x,z,a){const b=proj(x,0,z),sc=b.s*BK;if(!(sc>0))return;ctx.globalAlpha=a;drawFigure(ctx,STAND_POSE,p=>proj(x+p[0]*BK,p[1]*BK,z+p[2]*BK),sc,{col:rgb(dcol(z)),still:true});ctx.globalAlpha=1;}
 
 // ---------- Alat berat ----------
 function machine(o,z){const g=proj(o.lane*LW,0,z),c=dcol(z);return{g,s:g.s,col:rgb(c),lite:rgb(mixc(c,HZ,.2)),glass:rgb(mixc(c,HZ,.42)),a:fogVis(z)};}
@@ -855,7 +855,7 @@ function render(){
  const list=[],lim=VIS+12;
  for(const d of S.decor){const z=d.wz-S.dist;if(z>-2.5&&z<lim)list.push({z,d});}
  for(const o of S.objs){const z=o.wz-S.dist;if(z>-3&&z<lim)list.push({z,o});}
- if(S.ghost)list.push({z:S.ghost.wz-S.dist,ghost:true});
+ if(S.ghost){const z=S.ghost.wz-S.dist;if(z>-2.5&&z<lim)list.push({z,ghost:true});}
  list.push({z:0,player:true});
  list.sort((a,b)=>b.z-a.z);
  const dead=f>.7;
