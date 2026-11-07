@@ -70,6 +70,8 @@ canvas{display:block;width:100%;height:100%}
 #pause p{margin:0 0 10px;font:italic 400 16px/1 var(--f-sub);opacity:.75}
 #over{align-items:stretch;text-align:left;justify-content:flex-start;gap:22px;padding:calc(env(safe-area-inset-top) + 34px) 22px calc(env(safe-area-inset-bottom) + 22px);background:var(--ink);color:var(--haze);opacity:0;transition:opacity 1.2s}
 #over.show{opacity:1}
+#overFx{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
+#over>:not(#overFx){position:relative;z-index:1}
 .o-eye{display:flex;align-items:center;gap:10px;font:600 8px/1 var(--f-lab);letter-spacing:.34em;text-transform:uppercase;opacity:.8}
 .o-eye span:last-child{margin-left:auto}
 .o-sun{width:10px;height:10px;border-radius:50%;background:var(--red);box-shadow:0 0 0 4px rgba(168,35,26,.18);flex:none}
@@ -128,6 +130,7 @@ canvas{display:block;width:100%;height:100%}
  </div>
 
  <div id="over" class="ov hide">
+  <canvas id="overFx" aria-hidden="true"></canvas>
   <div class="o-top">
    <div class="o-eye"><i class="o-sun"></i><span>Laporan kejadian</span><span id="oYear">Kemarau 2026</span></div>
    <h1 id="cause"></h1>
@@ -213,7 +216,7 @@ const TOASTS=[
 const TIER_TOAST=["","Kualitas udara sedang. Tidak perlu khawatir.","Kualitas udara tidak sehat. Masker dibagikan terbatas.","Kualitas udara sangat tidak sehat. Situasi terkendali.","Kualitas udara berbahaya. Situasi terkendali."];
 const CAUSE={
  ispa:"Kamu meninggal karena ISPA<small>Asap mengejarmu!</small>",
- buldoser:"Kamu tertabrak buldoser SJP<small>Perusahaan melaporkan sedikit insiden dengan “batang pohon”.</small>",
+ bulldozer:"Kamu tertabrak bulldozer SJP<small>Perusahaan melaporkan sedikit insiden dengan “batang pohon”.</small>",
  ekskavator:"Kamu terlindas ekskavator SJP<small>“Pohon” sedang dilakukan land clearing untuk penanaman.</small>",
  gambut:"Kamu terperosok ke gambut yang terbakar<small>Tidak ada apa-apa di sini, hanya orang<s>utan</s> terbakar.</small>",
  baliho:"Kamu menabrak spanduk zero burning<small>Zero burning. Zero victim.</small>",
@@ -290,24 +293,25 @@ function reset(){
  S={t:0,dist:0,speed:13,lane:0,px:0,py:0,vy:0,slide:0,ispu:20,bibit:0,objs:[],decor:[],spawnAt:42,
   fire:0,lastStumble:-99,shake:0,rain:0,nextRain:rand(70,85),year:2026,years:1,tier:0,hot:12,
   nextToast:rand(12,18),nextTick:rand(5,8),ash:[],ghost:null,ghostT:6,plane:null,pulse:0,dieT:0,cause:null,ph:0,land:0,coughT:0,lookT:0,nextLook:rand(5,8)};
- for(const side of[-1,1])for(let wz=1;wz<92;wz+=rand(2.6,4.6))S.decor.push(newDecor(side,wz));
+ for(const side of[-1,1])for(const[row,gap]of[[0,[2.2,3.6]],[1,[1.8,3]],[2,[1.6,2.6]]])for(let wz=1+row*.9;wz<92;wz+=rand(gap[0],gap[1]))S.decor.push(newDecor(side,wz,row));
 }
-function newDecor(side,wz){
+function newDecor(side,wz,row=0){
  const r=Math.random();let kind='sawit';
- if(r<.15)kind='tunggul';else if(r<.19)kind='baliho';else if(r<.28)kind='siluet';
- const far=kind==='baliho'?rand(2.7,3.4):rand(1.9,3.8);
- return{side,wz,kind,x:side*far,seed:Math.random(),h:rand(2.4,3.8)};
+ if(row===0){if(r<.13)kind='tunggul';else if(r<.17)kind='baliho';else if(r<.26)kind='siluet';}
+ else if(r<.12)kind='tunggul';
+ const far=kind==='baliho'?rand(2.7,3.4):row===0?rand(1.9,3.2):row===1?rand(3.5,5.2):rand(5.6,8.4);
+ return{side,wz,kind,row,x:side*far,seed:Math.random(),h:rand(2.6,4.2)+row*.25,burn:Math.random()};
 }
 
 // ================= Spawn =================
 function spawnRow(wz){
  const lanes=[-1,0,1].sort(()=>Math.random()-.5);
  const n=(S.dist>220&&Math.random()<.42)?2:1;
- const types=['kayu','kayu','palang','palang','buldoser','buldoser','ekskavator'];
+ const types=['kayu','kayu','palang','palang','bulldozer','bulldozer','ekskavator'];
  if(S.dist>140)types.push('gambut','gambut');
  for(let i=0;i<n;i++){
   let ty=pick(types);
-  const heavy=t=>t==='buldoser'||t==='ekskavator';if(i===1&&heavy(ty)&&S.objs.some(o=>o.wz===wz&&heavy(o.type)))ty='kayu';
+  const heavy=t=>t==='bulldozer'||t==='ekskavator';if(i===1&&heavy(ty)&&S.objs.some(o=>o.wz===wz&&heavy(o.type)))ty='kayu';
   S.objs.push({type:ty,lane:lanes[i],wz,len:ty==='gambut'?2.6:.45,seed:Math.random(),cracks:ty==='gambut'?mkCracks():null});
  }
  const free=lanes[n];
@@ -420,7 +424,7 @@ function update(dt){
   if(o.hit||!inLane||!(z<.35&&z+o.len>-.35))continue;
   if(o.type==='kayu'&&S.py<.5){o.hit=true;stumble();}
   else if(o.type==='palang'&&S.slide<=0){o.hit=true;die('baliho');}
-  else if(o.type==='buldoser'){o.hit=true;die('buldoser');}
+  else if(o.type==='bulldozer'){o.hit=true;die('bulldozer');}
   else if(o.type==='ekskavator'){o.hit=true;die('ekskavator');}
   else if(o.type==='gambut'&&S.py<.12){o.hit=true;die('gambut');}
   if(mode!=='play')return;
@@ -441,7 +445,7 @@ function update(dt){
  $('hud').classList.toggle('danger',S.tier===4);$('hud').classList.toggle('dark',S.ispu>330);
  $('hot').textContent='Hotspot '+S.hot.toLocaleString('id-ID');$('year').textContent='Kemarau '+S.year;
 }
-function recycleDecor(){for(const d of S.decor)if(d.wz-S.dist<-2.5)Object.assign(d,newDecor(d.side,d.wz+92));}
+function recycleDecor(){for(const d of S.decor)if(d.wz-S.dist<-2.5)Object.assign(d,newDecor(d.side,d.wz+92,d.row));}
 function updAsh(dt){
  const f=S.ispu/500;
  if(Math.random()<dt*(10+f*60))S.ash.push({x:rand(W),y:-5,vx:rand(-12,4),vy:rand(14,40),l:rand(4,8),r:rand(.8,2.2),a:rand(6.3),va:rand(-3,3),ember:false});
@@ -456,22 +460,53 @@ function capsule(ax,ay,bx,by,ra,rb){const dx=bx-ax,dy=by-ay,L=Math.hypot(dx,dy)|
  ctx.moveTo(ax+ra,ay);ctx.arc(ax,ay,ra,0,7);ctx.moveTo(bx+rb,by);ctx.arc(bx,by,rb,0,7);ctx.fill();ctx.beginPath();}
 // Sawit: batang meruncing, pelepah dengan anak daun, goyang angin
 function palmAt(c,bx,by,tx,ty,s,seed,o){
- const wb=.12*s,wt=.07*s,bend=(seed-.5)*.5*s,mx=(bx+tx)/2+bend,my=(by+ty)/2,sway=o.sway||0;
+ const wb=.13*s,wt=.085*s,bend=(seed-.5)*.5*s,mx=(bx+tx)/2+bend,my=(by+ty)/2,sway=o.sway||0;
  tx+=sway*.4;
+ // batang dengan pangkal pelepah yang tersisa (tekstur khas sawit)
  c.beginPath();c.moveTo(bx-wb,by);c.quadraticCurveTo(mx-wb*.7,my,tx-wt,ty);c.lineTo(tx+wt,ty);c.quadraticCurveTo(mx+wb*.7,my,bx+wb,by);c.closePath();
- c.moveTo(tx+.17*s,ty+.06*s);c.ellipse(tx,ty+.06*s,.17*s,.13*s,0,0,7);if(s>9){c.moveTo(tx-.03*s,ty+.22*s);c.ellipse(tx-.13*s,ty+.22*s,.1*s,.12*s,.3,0,7);c.moveTo(tx+.21*s,ty+.24*s);c.ellipse(tx+.12*s,ty+.24*s,.09*s,.11*s,-.3,0,7);}c.fill();
- const n=o.n||12,steps=s>18?9:s>7?5:3;c.lineWidth=Math.max(.6,.028*s);c.lineCap='round';c.beginPath();
+ c.fill();c.beginPath();
+ if(s>5){const nk=s>20?14:8;for(let k=0;k<nk;k++){const u=.28+k/nk*.7,q=1-u,x=q*q*bx+2*q*u*mx+u*u*tx,y=q*q*by+2*q*u*my+u*u*ty,w=(wb+(wt-wb)*u)*.95,sd=k%2?1:-1,j=((k*7.3+seed*13)%1);
+  c.moveTo(x+sd*w*.6,y+.05*s);c.lineTo(x+sd*(w+.06*s+j*.04*s),y-.07*s-j*.03*s);c.lineTo(x+sd*w*.2,y-.02*s);}}
+ c.moveTo(tx+.18*s,ty+.06*s);c.ellipse(tx,ty+.06*s,.18*s,.14*s,0,0,7);if(s>9){c.moveTo(tx-.03*s,ty+.22*s);c.ellipse(tx-.13*s,ty+.22*s,.1*s,.12*s,.3,0,7);c.moveTo(tx+.21*s,ty+.24*s);c.ellipse(tx+.12*s,ty+.24*s,.09*s,.11*s,-.3,0,7);}c.fill();
+ // pelepah: hidup melengkung rapat, mati patah menggantung dan gundul
+ const n=o.n||(s>14?17:13),steps=s>18?12:s>7?6:3,dead=o.dead;c.lineWidth=Math.max(.6,.03*s);c.lineCap='round';c.beginPath();
  for(let i=0;i<n;i++){
-  const an=i/n*Math.PI*2+seed*5,dead=o.dead&&i%3===0,L=(1.1+((i*7+seed*10)%3)*.13)*s,ca=Math.cos(an),sa=Math.sin(an)*.38;
-  const lift=dead?-.2*s:(.38+.22*Math.abs(Math.sin(an*1.7)))*s,droop=(dead?1.3:.62)*s,sw=sway*(.6+Math.abs(ca)*.6);
-  const p1x=tx+ca*L*.5+sw*.5,p1y=ty-lift+sa*L*.3,p2x=tx+ca*L*(dead?.6:1)+sw,p2y=ty+droop*.55+sa*L+Math.abs(sw)*.2;
+  const an=i/n*Math.PI*2+seed*5,broken=dead&&i%3===0,bare=dead&&i%3===1,L=(1.15+((i*7+seed*10)%3)*.14)*s,ca=Math.cos(an),sa=Math.sin(an)*.38;
+  const lift=broken?-.25*s:(.42+.24*Math.abs(Math.sin(an*1.7)))*s,droop=(broken?1.5:.66)*s,sw=sway*(.6+Math.abs(ca)*.6);
+  const p1x=tx+ca*L*(broken?.25:.5)+sw*.5,p1y=ty-lift+sa*L*.3,p2x=tx+ca*L*(broken?.4:1)+sw,p2y=ty+droop*.55+sa*L+Math.abs(sw)*.2;
   const Q=u=>[(1-u)*(1-u)*tx+2*(1-u)*u*p1x+u*u*p2x,(1-u)*(1-u)*ty+2*(1-u)*u*p1y+u*u*p2y];
   c.moveTo(tx,ty);for(let k=1;k<=steps;k++){const q=Q(k/steps);c.lineTo(q[0],q[1]);}
-  if(s>8)for(let k=2;k<=steps;k++){const u=k/steps,q=Q(u),dx=2*(1-u)*(p1x-tx)+2*u*(p2x-p1x),dy=2*(1-u)*(p1y-ty)+2*u*(p2y-p1y),dl=Math.hypot(dx,dy)||1,nx=-dy/dl,ny=dx/dl,ll=.34*s*(1-u*.55);
-   c.moveTo(q[0],q[1]);c.lineTo(q[0]+nx*ll*.75,q[1]+ny*ll*.75+ll*.55);c.moveTo(q[0],q[1]);c.lineTo(q[0]-nx*ll*.75,q[1]-ny*ll*.75+ll*.55);}
+  if(s>7&&!bare)for(let k=2;k<=steps;k++){if(broken&&k%2)continue;const u=k/steps,q=Q(u),dx=2*(1-u)*(p1x-tx)+2*u*(p2x-p1x),dy=2*(1-u)*(p1y-ty)+2*u*(p2y-p1y),dl=Math.hypot(dx,dy)||1,nx=-dy/dl,ny=dx/dl,
+   ll=.36*s*(1-u*.5)*(.8+.4*((k*3.7+i)%1)),hang=broken?1.1:.55;
+   c.moveTo(q[0],q[1]);c.lineTo(q[0]+nx*ll*.7,q[1]+ny*ll*.7+ll*hang);c.moveTo(q[0],q[1]);c.lineTo(q[0]-nx*ll*.7,q[1]-ny*ll*.7+ll*hang);}
  }c.stroke();
 }
-function palmW(c,x,z,h,seed,col,dead,t){const b=proj(x,0,z),tp=proj(x+(seed-.5)*.3,h,z);c.fillStyle=col;c.strokeStyle=col;palmAt(c,b.x,b.y,tp.x,tp.y,b.s,seed,{dead,sway:Math.sin(t*1.3+seed*9)*.09*b.s});}
+// Sawit sebagai sprite: tiap bentuk (8 variasi x hidup/mati) digambar sekali dalam warna gelap,
+// lalu ditempel dengan transparansi sesuai jarak kabut. Pohon yang sangat dekat tetap digambar vektor.
+const PALM_REF=64,PALM_H=3.4,PALM_SPR=new Map();
+function palmSprite(seed,dead){const bk=Math.min(7,Math.floor(seed*8)),key=bk+(dead?'d':'');let sp=PALM_SPR.get(key);if(sp)return sp;
+ const R=PALM_REF,w=Math.ceil(4.6*R),h=Math.ceil((PALM_H+1.25)*R),bx=w/2,by=h-.15*R,sd=(bk+.5)/8,cv=document.createElement('canvas');cv.width=w;cv.height=h;
+ const c=cv.getContext('2d');c.fillStyle=c.strokeStyle=rgb(C.near);palmAt(c,bx,by,bx+(sd-.5)*.3*R,by-PALM_H*R,R,sd,{dead});
+ sp={cv,bx,by,w,h};PALM_SPR.set(key,sp);return sp;}
+function palmDraw(d,z,dead,fv){const b=proj(d.x,0,z),tp=proj(d.x+(d.seed-.5)*.3,d.h,z),swayPx=Math.sin(S.t*1.3+d.seed*9)*.09*b.s;
+ if(b.s>PALM_REF*1.15){ctx.globalAlpha=fv;palmW(ctx,d.x,z,d.h,d.seed,rgb(dcol(z)),dead,S.t);ctx.globalAlpha=1;return{b,tp};}
+ const k=Math.pow(depthK(z),1.25)*.93+.04,far=z>VIS*.75?1-clamp((z-VIS*.75)/(VIS*.4)):1,a=k*far*fv;if(a<=.01)return{b,tp};
+ const sp=palmSprite(d.seed,dead),sx=b.s/PALM_REF,sy=sx*d.h/PALM_H;
+ ctx.save();ctx.globalAlpha=a;ctx.translate(b.x,b.y);ctx.transform(1,0,-swayPx*.6/(d.h*b.s),1,0,0);ctx.drawImage(sp.cv,-sp.bx*sx,-sp.by*sy,sp.w*sx,sp.h*sy);ctx.restore();
+ return{b,tp};}
+// api di tajuk/pangkal sawit yang terbakar, dan asap yang mengepul ke atas
+function palmFire(x,y,s,amt,seed,fv){if(amt<=0||s<1.5)return;const t=S.t,fk=.8+.2*Math.sin(t*13+seed*30);
+ if(!LOWQ){ctx.save();ctx.globalCompositeOperation='lighter';const r=1.3*s*amt,g=ctx.createRadialGradient(x,y-.3*s,0,x,y-.3*s,r);g.addColorStop(0,`rgba(230,90,30,${.35*fv*fk})`);g.addColorStop(1,'rgba(230,90,30,0)');ctx.fillStyle=g;ctx.fillRect(x-r,y-.3*s-r,r*2,r*2);ctx.restore();}
+ ctx.globalAlpha=fv*clamp(amt*1.4);
+ for(const[col,k]of[[C.redDeep,1],[C.red,.62],['#e8823a',.32]]){ctx.fillStyle=col;ctx.beginPath();
+  for(let i=0;i<6;i++){const w=.13*s*k*(1+((i*1.7+seed*9)%1)*.6),xx=x+(i-2.5)*.09*s*k,hh=.95*s*k*amt*(.55+.45*Math.abs(Math.sin(t*(7+i)+seed*20+i*1.3)));
+   ctx.moveTo(xx-w,y);ctx.quadraticCurveTo(xx-w*.5,y-hh*.5,xx+Math.sin(t*5+i+seed*7)*w*.5,y-hh);ctx.quadraticCurveTo(xx+w*.5,y-hh*.5,xx+w,y);}ctx.fill();}
+ ctx.globalAlpha=1;}
+function palmSmoke(x,y,s,amt,seed,fv){if(amt<=0)return;const t=S.t,pc=puffOf(mixc(HZ,C.near,.55));
+ for(let k=0;k<7;k++){const u=((t*.16+seed+k/7)%1),r=(.4+u*1.9)*s,xx=x+Math.sin(u*3+seed*9)*.3*s+u*u*.8*s,yy=y-u*3.2*s;
+  ctx.globalAlpha=fv*clamp(.35+amt*.6)*.85*Math.sin(u*Math.PI);ctx.drawImage(pc,xx-r,yy-r*.8,r*2,r*1.6);}
+ ctx.globalAlpha=1;}
+function palmW(c,x,z,h,seed,col,dead,t){const b=proj(x,0,z),tp=proj(x+(seed-.5)*.3,h,z);c.fillStyle=col;c.strokeStyle=col;palmAt(c,b.x,b.y,tp.x,tp.y,b.s,seed,{dead,sway:Math.sin(t*1.3+seed*9)*.09*b.s});return{b,tp};}
 // Warga: kerangka sederhana, pose dihitung tiap frame
 // ---------- Tokoh utama: kerangka 3D sederhana, diproyeksikan kamera game ----------
 const BK=.64; // skala tubuh (meter -> unit dunia)
@@ -644,48 +679,72 @@ function workLights(s,pts,o,z,cone){if(z>=VIS+10)return;const fl=.75+.25*Math.si
  ctx.globalAlpha=la;ctx.fillStyle=C.lamp;ctx.beginPath();for(const p of pts){ctx.moveTo(p[0]*s+r,-p[1]*s);ctx.arc(p[0]*s,-p[1]*s,r,0,7);}ctx.fill();ctx.globalAlpha=1;}
 function bar(x1,y1,x2,y2,w,s){const dx=x2-x1,dy=y2-y1,L=Math.hypot(dx,dy)||1,nx=-dy/L*w/2,ny=dx/L*w/2;ctx.beginPath();ctx.moveTo((x1+nx)*s,-(y1+ny)*s);ctx.lineTo((x2+nx)*s,-(y2+ny)*s);ctx.lineTo((x2-nx)*s,-(y2-ny)*s);ctx.lineTo((x1-nx)*s,-(y1-ny)*s);ctx.closePath();ctx.fill();}
 function box(x,y,w,h,s){ctx.fillRect(x*s,-(y+h)*s,w*s,h*s);}
-// Buldoser tampak depan: blade terangkat, track terlihat di bawahnya, kabin ROPS, kap mesin dengan kisi radiator
+// palet alat berat: nada dasar kabut + bidang atas terang + bidang depan tersorot api dari belakang kamera
+function mtone(z){const c0=dcol(z),hot=clamp(fireHeat()*.45)*clamp(1-z/20);
+ return{c0,base:rgb(c0),dark:rgb(mixc(c0,C.near,.55)),lite:rgb(mixc(c0,HZ,.24)),warm:rgb(mixc(mixc(c0,HZ,.1),[200,86,34],hot)),
+  glassTop:rgb(mixc(c0,HZ,.38)),glassBot:rgb(mixc(mixc(c0,HZ,.3),[220,100,40],.2+hot*.8)),soil:rgb(mixc(c0,[70,46,28],.35)),hot};}
+function vgrad(y0,y1,top,bot,s){const g=ctx.createLinearGradient(0,-y1*s,0,-y0*s);g.addColorStop(0,top);g.addColorStop(1,bot);return g;}
+function rbox(x,y,w,h,r,s){ctx.beginPath();if(ctx.roundRect)ctx.roundRect(x*s,-(y+h)*s,w*s,h*s,r*s);else ctx.rect(x*s,-(y+h)*s,w*s,h*s);ctx.fill();}
+function exhaust(x,y,s,a,c0,seed){const pc=puffOf(mixc(c0,C.near,.65));for(let k=0;k<6;k++){const ph=(S.t*1.05+k/6+seed)%1,r=(.07+ph*.4)*s;
+ ctx.globalAlpha=a*(1-ph)*.6;ctx.drawImage(pc,(x+ph*.3+Math.sin(ph*5+seed*9)*.05)*s-r,-(y+ph*1.3)*s-r,r*2,r*2);}ctx.globalAlpha=a;}
+function track(x0,w,h,s,T){ctx.fillStyle=T.dark;rbox(x0,0,w,h,.09,s);ctx.fillStyle=T.base;
+ for(let i=0;i<Math.round(w/.05);i++)box(x0+.012+i*.05,0,.028,.055,s);                 // grouser
+ ctx.fillStyle=T.lite;box(x0+.04,h-.035,w-.08,.022,s);                                  // tepi atas tersorot
+ ctx.fillStyle=T.base;for(const u of[.25,.75]){ctx.beginPath();ctx.arc((x0+w*u)*s,-(h*.5)*s,.055*s,0,7);ctx.fill();}}
+// Bulldozer tampak depan: blade bergaris aus mendorong tanah dan ranting, kabin ROPS dengan kaca memantulkan api
 function drawDozer(o,z){
- const{g,s,col,lite,glass,a}=machine(o,z),bob=Math.sin(S.t*22+o.seed*9)*.008*s;
+ const{g,s,a}=machine(o,z),T=mtone(z),bob=Math.sin(S.t*22+o.seed*9)*.008*s;
  ctx.save();ctx.translate(g.x,g.y+bob);
- if(a>0){ctx.globalAlpha=a;ctx.fillStyle=col;
-  box(.15,.9,.045,.62,s);                                   // knalpot
-  box(-.33,1.5,.66,.06,s);box(-.31,.9,.06,.62,s);box(.25,.9,.06,.62,s); // atap & pilar ROPS
-  ctx.fillStyle=glass;box(-.25,.95,.5,.5,s);ctx.fillStyle=col;box(-.015,.95,.03,.5,s);
-  box(-.52,.72,1.04,.22,s);                                 // fender
-  box(-.23,.6,.46,.42,s);                                   // kap mesin
-  ctx.fillStyle=lite;for(let i=0;i<5;i++)box(-.17,.66+i*.065,.34,.022,s); // kisi radiator
-  box(-.62,0,.3,.17,s);box(.32,0,.3,.17,s);                 // track
-  ctx.fillStyle=col;for(let i=0;i<6;i++){box(-.61+i*.05,0,.028,.05,s);box(.33+i*.05,0,.028,.05,s);}
-  ctx.fillStyle=lite;bar(-.38,.93,-.45,.6,.06,s);bar(.38,.93,.45,.6,.06,s); // silinder tilt
-  ctx.fillStyle=col;ctx.beginPath();                        // blade (moldboard)
-  ctx.moveTo(-.67*s,-.16*s);ctx.lineTo(.67*s,-.16*s);ctx.lineTo(.64*s,-.8*s);ctx.quadraticCurveTo(0,-.73*s,-.64*s,-.8*s);ctx.closePath();ctx.fill();
-  ctx.fillStyle=lite;ctx.beginPath();ctx.moveTo(-.64*s,-.8*s);ctx.quadraticCurveTo(0,-.73*s,.64*s,-.8*s);ctx.lineTo(.635*s,-.73*s);ctx.quadraticCurveTo(0,-.67*s,-.635*s,-.73*s);ctx.fill();
-  ctx.globalAlpha=a*.5;for(const x of[-.42,-.14,.14,.42])box(x-.008,.24,.016,.44,s);ctx.globalAlpha=a;
-  ctx.fillStyle='#0d0c0a';box(-.67,.16,1.34,.06,s);        // cutting edge
-  if(s>45){ctx.fillStyle=lite;ctx.font=`800 ${.13*s}px "Big Shoulders Display",sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('SJP',0,-.45*s);}
-  ctx.fillStyle=col;for(let k=0;k<4;k++){const ph=(S.t*1.3+k/4+o.seed)%1;ctx.globalAlpha=a*(1-ph)*.45;ctx.beginPath();ctx.arc((.17+ph*.12)*s,-(1.55+ph*.9)*s,(.05+.13*ph)*s,0,7);ctx.fill();}
+ if(a>0){ctx.globalAlpha=a;
+  exhaust(.2,1.7,s,a,T.c0,o.seed);
+  track(-.68,.36,.44,s,T);track(.32,.36,.44,s,T);
+  ctx.fillStyle=vgrad(.55,.98,T.lite,T.base,s);box(-.52,.55,1.04,.42,s);             // fender & badan
+  ctx.fillStyle=vgrad(.5,1.06,T.warm,T.dark,s);box(-.24,.5,.48,.56,s);               // kap mesin
+  ctx.fillStyle=T.dark;for(let i=0;i<6;i++)box(-.19,.56+i*.075,.38,.03,s);           // kisi radiator
+  ctx.fillStyle=T.base;box(-.36,1.05,.72,.07,s);box(-.36,1.1,.06,.6,s);box(.3,1.1,.06,.6,s); // dasar kabin & pilar
+  ctx.fillStyle=T.lite;box(-.39,1.68,.78,.08,s);                                     // atap ROPS
+  ctx.fillStyle=vgrad(1.12,1.66,T.glassTop,T.glassBot,s);box(-.3,1.12,.6,.54,s);    // kaca
+  ctx.fillStyle=T.dark;ctx.beginPath();ctx.arc(.06*s,-1.44*s,.075*s,0,7);ctx.fill();box(-.04,1.12,.2,.24,s); // operator
+  ctx.fillStyle=T.base;box(-.012,1.12,.024,.54,s);
+  ctx.fillStyle=T.dark;box(.17,1.0,.055,.72,s);                                     // knalpot
+  ctx.fillStyle=T.base;bar(-.5,.46,-.62,.3,.09,s);bar(.5,.46,.62,.3,.09,s);          // lengan dorong
+  ctx.fillStyle=T.lite;bar(-.38,1.0,-.48,.62,.05,s);bar(.38,1.0,.48,.62,.05,s);      // silinder tilt
+  // blade melengkung
+  ctx.fillStyle=vgrad(.14,.84,T.warm,T.dark,s);ctx.beginPath();ctx.moveTo(-.72*s,-.14*s);ctx.lineTo(.72*s,-.14*s);ctx.lineTo(.69*s,-.84*s);ctx.quadraticCurveTo(0,-.76*s,-.69*s,-.84*s);ctx.closePath();ctx.fill();
+  ctx.fillStyle=T.lite;ctx.beginPath();ctx.moveTo(-.69*s,-.84*s);ctx.quadraticCurveTo(0,-.76*s,.69*s,-.84*s);ctx.lineTo(.685*s,-.77*s);ctx.quadraticCurveTo(0,-.7*s,-.685*s,-.77*s);ctx.fill();
+  ctx.globalAlpha=a*.4;ctx.fillStyle=T.dark;for(let i=0;i<10;i++){const x=-.62+i*.135+Math.sin(i*7+o.seed*5)*.03;box(x,.2,.012,.3+((i*5)%3)*.09,s);}ctx.globalAlpha=a; // garis aus
+  ctx.fillStyle='#0d0c0a';box(-.72,.12,1.44,.05,s);box(-.74,.12,.06,.64,s);box(.68,.12,.06,.64,s); // pisau & end bit
+  // tanah dan ranting yang terdorong
+  ctx.fillStyle=T.soil;ctx.beginPath();ctx.moveTo(-.78*s,0);for(let i=0;i<=12;i++){const x=-.78+i*.13,h=.11+.09*Math.abs(Math.sin(i*2.3+o.seed*7+S.dist*.3));ctx.lineTo(x*s,-h*s);}ctx.lineTo(.78*s,0);ctx.closePath();ctx.fill();
+  ctx.strokeStyle=T.dark;ctx.lineWidth=Math.max(1,.022*s);ctx.lineCap='round';ctx.beginPath();for(let i=0;i<5;i++){const x=-.6+i*.29;ctx.moveTo(x*s,-.08*s);ctx.lineTo((x+.2)*s,-(.24+(i%2)*.1)*s);ctx.moveTo((x+.1)*s,-.16*s);ctx.lineTo((x+.05)*s,-.27*s);}ctx.stroke();
+  if(s>45){ctx.fillStyle=T.lite;ctx.font=`800 ${.13*s}px "Big Shoulders Display",sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('SJP',0,-.47*s);}
   ctx.globalAlpha=1;}
- workLights(s,[[-.42,.86],[.42,.86],[-.2,1.6],[.2,1.6]],o,z,true);
+ workLights(s,[[-.42,.86],[.42,.86],[-.22,1.62],[.22,1.62]],o,z,true);
  ctx.restore();
 }
-// Ekskavator tampak depan: dua track lebar, kabin di kiri, boom naik lalu lengan dan bucket menggali
+// Ekskavator tampak depan: track lebar, rumah putar dengan kabin, boom bersilinder hidrolik, bucket berisi tanah
 function drawExc(o,z){
- const{g,s,col,lite,glass,a}=machine(o,z),cyc=(S.t*.5+o.seed)%1,dig=Math.sin(cyc*Math.PI*2),by=.62+dig*.38,curl=Math.cos(cyc*Math.PI*2);
+ const{g,s,a}=machine(o,z),T=mtone(z),cyc=(S.t*.5+o.seed)%1,dig=Math.sin(cyc*Math.PI*2),by=.62+dig*.38,curl=Math.cos(cyc*Math.PI*2);
  ctx.save();ctx.translate(g.x,g.y);
- if(a>0){ctx.globalAlpha=a;ctx.fillStyle=col;
-  box(-.72,0,.34,.36,s);box(.38,0,.34,.36,s);box(-.4,.12,.8,.18,s); // track & undercarriage
-  ctx.fillStyle=lite;for(let i=0;i<4;i++){box(-.7,.05+i*.08,.3,.018,s);box(.4,.05+i*.08,.3,.018,s);}
-  ctx.fillStyle=col;box(-.64,.36,1.28,.46,s);                  // rumah putar
-  box(-.62,.82,.42,.62,s);ctx.fillStyle=glass;box(-.57,.9,.32,.44,s);ctx.fillStyle=col;box(-.42,.9,.02,.44,s); // kabin
-  box(.12,.82,.5,.12,s);box(.5,.82,.04,.38,s);                 // kap mesin & knalpot
-  bar(.02,.8,.06,2.08,.17,s);                                  // boom
-  ctx.fillStyle=lite;bar(.15,.85,.12,1.75,.05,s);ctx.fillStyle=col;
-  bar(.06,2.08,.07,by+.28,.13,s);                              // lengan (stick) mendekat ke kamera
-  const bw=.27,bh=.3,tilt=curl*.06;ctx.beginPath();             // bucket dengan gigi
+ if(a>0){ctx.globalAlpha=a;
+  exhaust(.54,1.25,s,a,T.c0,o.seed);
+  track(-.76,.4,.4,s,T);track(.36,.4,.4,s,T);ctx.fillStyle=T.dark;box(-.4,.12,.8,.2,s);  // track & undercarriage
+  ctx.fillStyle=vgrad(.36,.84,T.lite,T.warm,s);box(-.66,.36,1.32,.48,s);             // rumah putar
+  ctx.fillStyle=T.dark;box(-.66,.36,1.32,.05,s);ctx.fillStyle=T.lite;box(-.66,.8,1.32,.04,s);
+  ctx.fillStyle=T.base;box(-.64,.84,.44,.64,s);                                      // kabin
+  ctx.fillStyle=vgrad(.92,1.4,T.glassTop,T.glassBot,s);box(-.59,.92,.34,.48,s);
+  ctx.fillStyle=T.dark;ctx.beginPath();ctx.arc(-.44*s,-1.2*s,.065*s,0,7);ctx.fill();box(-.52,.92,.17,.2,s); // operator
+  ctx.fillStyle=T.base;box(-.43,.92,.02,.48,s);
+  ctx.fillStyle=vgrad(.84,.96,T.lite,T.base,s);box(.14,.84,.5,.12,s);ctx.fillStyle=T.dark;box(.52,.84,.045,.42,s); // kap mesin & knalpot
+  ctx.fillStyle=vgrad(.8,2.1,T.lite,T.warm,s);bar(.02,.8,.06,2.08,.18,s);            // boom
+  ctx.fillStyle=T.dark;bar(.17,.86,.15,1.4,.085,s);ctx.fillStyle=T.lite;bar(.15,1.38,.12,1.78,.04,s); // silinder boom
+  ctx.fillStyle=T.base;bar(.06,2.08,.07,by+.28,.13,s);                               // lengan
+  ctx.fillStyle=T.dark;bar(.16,2.0,.15,by+1,.06,s);ctx.fillStyle=T.lite;bar(.15,by+1,.14,by+.55,.03,s); // silinder lengan
+  const bw=.28,bh=.32,tilt=curl*.06;ctx.fillStyle=vgrad(by,by+bh,T.warm,T.dark,s);ctx.beginPath();
   ctx.moveTo((-bw+.07)*s,-(by+bh)*s);ctx.lineTo((bw+.07)*s,-(by+bh)*s);ctx.lineTo((bw*.85+.07)*s,-(by+tilt)*s);ctx.lineTo((-bw*.85+.07)*s,-(by+tilt)*s);ctx.closePath();ctx.fill();
-  ctx.fillStyle='#0d0c0a';for(let i=0;i<5;i++){const tx=(-bw*.8+.07+i*bw*.4)*s;ctx.beginPath();ctx.moveTo(tx-.03*s,-(by+tilt)*s);ctx.lineTo(tx,-(by+tilt-.07)*s);ctx.lineTo(tx+.03*s,-(by+tilt)*s);ctx.fill();}
-  if(dig>0){ctx.fillStyle=col;for(let k=0;k<6;k++){const ph=(S.t*2+k/6)%1;ctx.globalAlpha=a*(1-ph);ctx.fillRect((.07+Math.sin(k*3.1)*.15)*s,-(by-ph*by)*s,Math.max(1,.025*s),Math.max(1,.025*s));}ctx.globalAlpha=a;}
+  if(dig<0){ctx.fillStyle=T.soil;ctx.beginPath();ctx.ellipse(.07*s,-(by+bh)*s,bw*.95*s,.09*s,0,Math.PI,0);ctx.fill();} // muatan tanah
+  ctx.fillStyle='#0d0c0a';for(let i=0;i<5;i++){const tx=(-bw*.8+.07+i*bw*.4)*s;ctx.beginPath();ctx.moveTo(tx-.03*s,-(by+tilt)*s);ctx.lineTo(tx,-(by+tilt-.08)*s);ctx.lineTo(tx+.03*s,-(by+tilt)*s);ctx.fill();}
+  if(dig>0){ctx.fillStyle=T.soil;for(let k=0;k<8;k++){const ph=(S.t*2+k/8)%1;ctx.globalAlpha=a*(1-ph);const r=Math.max(1,.03*s*(1-ph*.5));ctx.fillRect((.07+Math.sin(k*3.1)*.17)*s-r,-(by-ph*by)*s,r*2,r*2);}ctx.globalAlpha=a;}
   ctx.globalAlpha=1;}
  workLights(s,[[-.55,1.5],[-.28,1.5],[.05,1.8]],o,z,false);
  ctx.restore();
@@ -740,7 +799,7 @@ function drawBaliho(d,z){const p0=proj(d.x,0,z),p1=proj(d.x,3.1,z),p2=proj(d.x,1
 // ================= Lapisan jauh (cache) =================
 const FAR_Z=[70,46,30],NEAR_Z=[19,12,7,3.4];
 let farCv=document.createElement('canvas'),farX=farCv.getContext('2d'),farKey='';
-const FAR_PALMS=(()=>{const a=[];let s=7;const r=()=>(s=(s*16807)%2147483647)/2147483647;for(const z of FAR_Z){const row=[];for(let x=-30;x<=30;x+=1.4+r()*1.5){if(Math.abs(x)<1.55*LW+.8)continue;row.push({x,z:z+r()*2,h:2.3+r()*1.4,seed:r()});}a.push(row);}return a;})();
+const FAR_PALMS=(()=>{const a=[];let s=7;const r=()=>(s=(s*16807)%2147483647)/2147483647;for(const z of FAR_Z){const row=[];for(let x=-30;x<=30;x+=.75+r()*.9){if(Math.abs(x)<1.55*LW+.8)continue;row.push({x,z:z+r()*2,h:2.3+r()*1.4,seed:r()});}a.push(row);}return a;})();
 function buildFar(f){
  const key=[Math.round(f*60),Math.round(VIS),Math.round(S.rain>0?1:0),W,H].join();if(key===farKey)return;farKey=key;
  farCv.width=Math.round(W*DPR);farCv.height=Math.round(H*DPR);farX.setTransform(DPR,0,0,DPR,0,0);farX.clearRect(0,0,W,H);
@@ -816,14 +875,16 @@ function render(){
  for(const it of list){const z=it.z;
   if(it.player){if(mode!=='over')drawRunner();continue;}
   if(it.ghost){drawPerson(S.ghost.x,z,fogVis(z)*clamp(Math.min(S.ghost.life,.9-S.ghost.life)*4));continue;}
-  if(it.o){const o=it.o;if(o.type==='kayu')drawLog(o,z);else if(o.type==='palang')drawBanner(o,z);else if(o.type==='buldoser')drawDozer(o,z);else if(o.type==='ekskavator')drawExc(o,z);else if(o.type==='gambut')drawGambut(o,z);else drawPickup(o,z);continue;}
-  const d=it.d,fv=fogVis(z);if(fv<=0)continue;
+  if(it.o){const o=it.o;if(o.type==='kayu')drawLog(o,z);else if(o.type==='palang')drawBanner(o,z);else if(o.type==='bulldozer')drawDozer(o,z);else if(o.type==='ekskavator')drawExc(o,z);else if(o.type==='gambut')drawGambut(o,z);else drawPickup(o,z);continue;}
+  const d=it.d,fv=fogVis(z);if(fv<=0||(LOWQ&&d.row===2))continue;
   if(d.kind==='tunggul')drawStump(d,z);
   else if(d.kind==='baliho')drawBaliho(d,z);
   else if(d.kind==='siluet'&&S.ispu>=300&&z>5)drawPerson(d.x,z,fv*.85);
-  else{ctx.globalAlpha=fv;palmW(ctx,d.x,z,d.h,d.seed,rgb(dcol(z)),dead,S.t);ctx.globalAlpha=1;}
+  else{const share=.12+f*.55,burning=d.burn<share,dd=dead||d.burn<share*.6;const P=palmDraw(d,z,dd,fv);
+   if(burning&&z>1){const amt=clamp((share-d.burn)/share*1.6)*(1-ra*.6);palmSmoke(P.tp.x,P.tp.y,P.b.s,amt,d.seed,fv);
+    if(d.burn<share*.5)palmFire(P.tp.x,P.tp.y+.05*P.b.s,P.b.s,amt,d.seed,fv);if(d.burn<share*.75)palmFire(P.b.x,P.b.y,P.b.s*.7,amt*.8,d.seed+.3,fv);}}
  }
- drawMist(f,ra,true);
+ if(!LOWQ)drawMist(f,ra,true);
  // hujan
  if(ra>0){ctx.strokeStyle=`rgba(225,230,232,${.3*ra})`;ctx.lineWidth=1;ctx.beginPath();for(let i=0;i<110;i++){const x=(i*73.13+S.t*240)%W,y=(i*131.7+S.t*950)%H;ctx.moveTo(x,y);ctx.lineTo(x-5,y+16);}ctx.stroke();}
  // api pengejar: dua lapis lidah api datar
@@ -840,13 +901,34 @@ function render(){
 }
 function tongues(ht,col,n,seed,spd){ctx.fillStyle=col;ctx.beginPath();for(let i=0;i<n;i++){const r1=Math.sin(i*12.9898+seed*78.233)*43758.5453%1,r=Math.abs(r1),x=(i+r*.6)/n*W,ww=W/n*(.9+r*.8),hh=ht*(.5+.5*Math.abs(Math.sin(S.t*spd*3+i*1.7+seed))),lean=Math.sin(S.t*spd*2+i)*ww*.35;ctx.moveTo(x-ww,H+3);ctx.quadraticCurveTo(x-ww*.55,H-hh*.45,x+lean,H-hh);ctx.quadraticCurveTo(x+ww*.55,H-hh*.45,x+ww,H+3);ctx.closePath();}ctx.fill();}
 
+// ================= Layar hasil: abu & bara melayang =================
+const OFX={cv:null,cx:null,p:[],w:0,h:0};
+function overFx(dt){const cv=OFX.cv||(OFX.cv=$('overFx'));if(!cv)return;const r=cv.getBoundingClientRect();
+ if(OFX.w!==r.width||OFX.h!==r.height){OFX.w=r.width;OFX.h=r.height;cv.width=Math.round(r.width*DPR);cv.height=Math.round(r.height*DPR);OFX.cx=cv.getContext('2d');}
+ const c=OFX.cx,w=OFX.w,h=OFX.h;if(!c||!w)return;c.setTransform(DPR,0,0,DPR,0,0);c.clearRect(0,0,w,h);
+ while(OFX.p.length<70){const e=Math.random()<.4;OFX.p.push({x:Math.random()*w,y:OFX.p.length<70&&!OFX.started?Math.random()*h:h+10,ember:e,
+  vy:-(e?rand(10,26):rand(4,14)),ph:Math.random()*7,amp:rand(6,22),r:e?rand(.8,1.9):rand(1.2,3),a:Math.random()*7,va:rand(-1.5,1.5),l:1});}
+ OFX.started=true;
+ // pendar api samar dari bawah layar
+ const g=c.createLinearGradient(0,h,0,h*.55);g.addColorStop(0,'rgba(168,35,26,.16)');g.addColorStop(1,'rgba(168,35,26,0)');c.fillStyle=g;c.fillRect(0,h*.55,w,h*.45);
+ for(const e of OFX.p){e.y+=e.vy*dt;e.ph+=dt*.9;e.a+=e.va*dt;const x=e.x+Math.sin(e.ph)*e.amp,fade=clamp(Math.min((h-e.y)/(h*.15),e.y/(h*.35)));
+  if(e.y<-10){e.y=h+10;e.x=Math.random()*w;}
+  c.save();c.translate(x,e.y);c.rotate(e.a);
+  if(e.ember){const fl=.6+.4*Math.sin(S.t*9+e.ph*5);c.globalAlpha=fade*fl;c.fillStyle='#e8823a';c.shadowColor='rgba(232,90,30,.9)';c.shadowBlur=6;c.beginPath();c.arc(0,0,e.r,0,7);c.fill();}
+  else{c.globalAlpha=fade*.45;c.fillStyle='#8a8478';c.fillRect(-e.r,-e.r*.4,e.r*2,e.r*.8);}
+  c.restore();}
+}
+
 // ================= Loop =================
 let last=performance.now();
+// mode grafis otomatis: bila frame rate rendah >2 detik, kurangi efek berat
+let LOWQ=false,slowT=0,ema=1/60;
+function quality(rawDt){ema+=(rawDt-ema)*.05;if(!LOWQ){slowT=ema>1/35?slowT+rawDt:0;if(slowT>2){LOWQ=true;farKey='';}}}
 function frame(ts){
- const dt=Math.min(.033,Math.max(0,(ts-last)/1000));last=ts;
+ const raw=Math.max(0,(ts-last)/1000),dt=Math.min(.033,raw);last=ts;if(mode==='play'&&raw<.5)quality(raw);
  if(mode==='play')update(dt);
  else if(mode==='dying'){S.dieT+=dt;S.shake=Math.max(0,S.shake-dt);S.fire=Math.min(1.4,S.fire+dt);updAsh(dt);if(S.dieT>1.6)showOver();}
- else if(mode==='menu'||mode==='over'){S.t+=dt;S.dist+=dt*3;S.ph+=dt*2;updAsh(dt);recycleDecor();}
+ else if(mode==='menu'||mode==='over'){S.t+=dt;S.dist+=dt*3;S.ph+=dt*2;updAsh(dt);recycleDecor();if(mode==='over')overFx(dt);}
  if(mode!=='paused'){aUpdate(dt,mode==='play');render();}
  requestAnimationFrame(frame);
 }

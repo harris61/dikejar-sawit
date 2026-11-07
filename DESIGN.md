@@ -16,7 +16,7 @@ Cara memberi masukan: tandai ID dengan ✅ pakai / ❌ buang / ✏️ ubah, atau
 | Sudut pandang | Korban: warga desa (v0.1), lalu anak sekolah, petani kecil, orangutan |
 | Suara satire | Korporat dan pejabat lewat ticker, notifikasi, baliho, layar game over |
 | Nada | Satire gelap + horor atmosferik. Horor penuh hanya di ISPU "Berbahaya" |
-| Pengejar | Api, asap, buldoser |
+| Pengejar | Api, asap, bulldozer |
 | Platform | Web (HTML + Canvas), mobile-first, swipe 4 arah, keyboard, haptic, Web Audio |
 | Batasan | Tanpa gore. Tanpa nama perusahaan atau orang nyata. Perusahaan fiktif: **PT Sawit Juga Pohon (SJP)** |
 | Fakta nyata di game over | **Ya**, dengan sumber (wajib diverifikasi ulang sebelum rilis) |
@@ -59,7 +59,7 @@ Cara memberi masukan: tandai ID dengan ✅ pakai / ❌ buang / ✏️ ubah, atau
 |---|---|---|---|
 | D1 | Kayu tebangan | Lompat (kalau tertabrak, tersandung) | ✅ |
 | D2 | Spanduk "ZERO BURNING ✓" melintang | Merunduk | ✅ |
-| D3 | Buldoser PT SJP | Pindah jalur (mematikan) | ✅ |
+| D3 | Bulldozer PT SJP | Pindah jalur (mematikan) | ✅ |
 | D3b | Ekskavator PT SJP yang sedang menggali | Pindah jalur (mematikan) | ✅ |
 | D4 | Gambut terbakar dari dalam (retakan menyala, berasap) | Lompat (mematikan) | ✅ |
 | D5 | Kanal pengering yang dibuat perusahaan | Lompat | ⏳ |
@@ -88,7 +88,7 @@ Cara memberi masukan: tandai ID dengan ✅ pakai / ❌ buang / ✏️ ubah, atau
 ## G. Game Over
 | ID | Elemen | Status |
 |---|---|---|
-| G1 | Teks penyebab kematian (ISPA, buldoser, gambut, spanduk, api) | ✅ |
+| G1 | Teks penyebab kematian (ISPA, bulldozer, gambut, spanduk, api) | ✅ |
 | G2 | "PT SJP menyampaikan duka cita mendalam dan berkomitmen pada zero burning." | ✅ |
 | G3 | Statistik: Jarak · Bibit · Kemarau dilalui · **Tersangka: 0** | ✅ |
 | G4 | Satu fakta nyata + sumber | ✅ (verifikasi ulang) |
@@ -98,7 +98,7 @@ Cara memberi masukan: tandai ID dengan ✅ pakai / ❌ buang / ✏️ ubah, atau
 | ID | Elemen | Status |
 |---|---|---|
 | I1 | Api di belakang pemain, naik saat tersandung | ✅ |
-| I2 | Buldoser yang ikut mengejar | ⏳ |
+| I2 | Bulldozer yang ikut mengejar | ⏳ |
 | I3 | Warga & satwa lain yang ikut berlari, satu per satu tumbang dalam asap | ⏳ |
 
 ## J. Karhutla
