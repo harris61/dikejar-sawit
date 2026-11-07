@@ -802,9 +802,9 @@ function drawBaliho(d,z){const p0=proj(d.x,0,z),p1=proj(d.x,3.1,z),p2=proj(d.x,1
 const FAR_Z=[70,46,30];
 // Tanah: gradasi halus menurut kedalaman (bukan pita bertingkat). road = campuran ekstra ke warna kabut untuk jalur.
 function groundGrad(c,y0,road){const g=c.createLinearGradient(0,y0,0,H);g.addColorStop(0,rgb(mixc(HZ,HZ,0)));
- for(const z of[90,70,52,40,30,23,18,14,11,8,6,4.5,3.2,2.2,1.4,.8,.3]){const y=proj(0,0,z).y;if(y<=y0||y>=H)continue;
+ for(const z of[90,70,52,40,30,23,18,14,11,8,6,4.5,3.4]){const y=proj(0,0,z).y;if(y<=y0||y>=H)continue;
   const near=.18*clamp((30-z)/12);let col=mixc(dcol(z),HZ,near);if(road)col=mixc(col,HZ,road);g.addColorStop((y-y0)/(H-y0),rgb(col));}
- const zb=Math.max(.05,FOC*(CAMH)/(H-HOR)-CAMZ);let cb=mixc(dcol(zb),HZ,.18);if(road)cb=mixc(cb,HZ,road);g.addColorStop(1,rgb(cb));return g;}
+ let cb=mixc(dcol(3.4),HZ,.18);if(road)cb=mixc(cb,HZ,road);g.addColorStop(1,rgb(cb));return g;}
 let farCv=document.createElement('canvas'),farX=farCv.getContext('2d'),farKey='';
 const FAR_PALMS=(()=>{const a=[];let s=7;const r=()=>(s=(s*16807)%2147483647)/2147483647;for(const z of FAR_Z){const row=[];for(let x=-30;x<=30;x+=.75+r()*.9){if(Math.abs(x)<1.55*LW+.8)continue;row.push({x,z:z+r()*2,h:2.3+r()*1.4,seed:r()});}a.push(row);}return a;})();
 function buildFar(f){
