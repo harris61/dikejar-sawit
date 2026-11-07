@@ -637,6 +637,72 @@ function drawFigure(c,B,W3,sc,o){
  const nk=v3.add(sack,[-.03,.22,.01]);limb(c,W3(nk),W3(v3.add(sack,[-.13,.3+bb,-.02])),.035*sc,.016*sc,1.1);limb(c,W3(nk),W3(v3.add(sack,[.08,.31-bb,-.02])),.03*sc,.014*sc,1.1);
  const k=W3(nk),q=W3(v3.add(sack,[.03,-.08,-.03]));c.strokeStyle='rgba(13,12,10,.55)';c.lineWidth=Math.max(.7,.012*sc);c.beginPath();c.moveTo(k.x,k.y);c.quadraticCurveTo(k.x-.06*sc,(k.y+q.y)/2,q.x-.04*sc,q.y);c.moveTo(k.x,k.y);c.quadraticCurveTo(k.x+.07*sc,(k.y+q.y)/2,q.x+.06*sc,q.y+.02*sc);c.stroke();
 }
+// ---------- Petani bercaping (tokoh utama) ----------
+// Tiap bahan punya tekstur kecil (dibuat sekali) yang ditempel mengikuti tubuh, lalu diberi
+// bayangan bentuk dan cahaya api dari belakang-bawah (api berada di antara kamera dan pemain).
+const PAT=(()=>{const mk=(w,h,f)=>{const c=document.createElement('canvas');c.width=w;c.height=h;f(c.getContext('2d'),w,h);return c;};
+ const speck=(g,w,h,n,a)=>{for(let i=0;i<n;i++){g.fillStyle=Math.random()<.5?`rgba(0,0,0,${a*Math.random()})`:`rgba(255,240,210,${a*.6*Math.random()})`;g.fillRect(Math.random()*w,Math.random()*h,1+Math.random()*1.5,1+Math.random()*1.5);}};
+ return{
+  shirt:mk(64,64,(g,w,h)=>{g.fillStyle='#5a5444';g.fillRect(0,0,w,h);
+   for(let i=0;i<7;i++){g.fillStyle=`rgba(30,24,16,${.08+Math.random()*.1})`;g.beginPath();g.ellipse(Math.random()*w,Math.random()*h,4+Math.random()*10,3+Math.random()*7,Math.random()*3,0,7);g.fill();}
+   g.strokeStyle='rgba(0,0,0,.08)';for(let y=0;y<h;y+=2){g.beginPath();g.moveTo(0,y);g.lineTo(w,y);g.stroke();}speck(g,w,h,260,.22);}),
+  pants:mk(48,48,(g,w,h)=>{g.fillStyle='#352c25';g.fillRect(0,0,w,h);g.strokeStyle='rgba(255,230,200,.05)';for(let x=0;x<w;x+=3){g.beginPath();g.moveTo(x,0);g.lineTo(x,h);g.stroke();}speck(g,w,h,160,.2);}),
+  sarung:mk(48,48,(g,w,h)=>{g.fillStyle='#5f2a22';g.fillRect(0,0,w,h);g.fillStyle='rgba(38,52,40,.75)';g.fillRect(0,14,w,10);g.fillRect(14,0,10,h);
+   g.fillStyle='rgba(20,16,14,.35)';g.fillRect(14,14,10,10);g.fillStyle='rgba(196,160,110,.4)';g.fillRect(0,30,w,1.5);g.fillRect(30,0,1.5,h);g.fillRect(0,6,w,1);g.fillRect(6,0,1,h);speck(g,w,h,140,.18);}),
+  weave:mk(32,32,(g,w,h)=>{g.fillStyle='#9c7c47';g.fillRect(0,0,w,h);
+   for(let y=0;y<h;y+=4)for(let x=0;x<w;x+=8){const o=(y/4)%2,xx=x+(o?4:0);const gr=g.createLinearGradient(xx,0,xx+8,0);gr.addColorStop(0,'rgba(70,50,24,.35)');gr.addColorStop(.5,'rgba(255,236,190,.16)');gr.addColorStop(1,'rgba(70,50,24,.35)');g.fillStyle=gr;g.fillRect(xx,y,8,4);}
+   g.fillStyle='rgba(60,40,18,.3)';for(let y=0;y<h;y+=4)g.fillRect(0,y,w,.7);speck(g,w,h,70,.12);}),
+  skin:mk(32,32,(g,w,h)=>{g.fillStyle='#6b4029';g.fillRect(0,0,w,h);speck(g,w,h,90,.12);})
+ };})();
+const PATS={};
+function patOf(c,k,ox,oy,sc,meters){let p=PATS[k];if(!p||PATS[k+'_c']!==c){p=PATS[k]=c.createPattern(PAT[k],'repeat');PATS[k+'_c']=c;}
+ const s=sc*meters/PAT[k].width;if(p.setTransform)p.setTransform(new DOMMatrix([s,0,0,s,ox,oy]));return p;}
+function limbP(c,A,B,ra,rb,bul=1.12){const dx=B.x-A.x,dy=B.y-A.y,L=Math.hypot(dx,dy)||1,nx=-dy/L,ny=dx/L,mx=(A.x+B.x)/2,my=(A.y+B.y)/2,rm=Math.max(ra,rb)*bul,an=Math.atan2(ny,nx);
+ c.moveTo(A.x+nx*ra,A.y+ny*ra);c.quadraticCurveTo(mx+nx*rm,my+ny*rm,B.x+nx*rb,B.y+ny*rb);c.arc(B.x,B.y,rb,an,an+Math.PI,true);
+ c.quadraticCurveTo(mx-nx*rm,my-ny*rm,A.x-nx*ra,A.y-ny*ra);c.arc(A.x,A.y,ra,an+Math.PI,an,true);c.closePath();}
+function blobP(c,pts){const n=pts.length,m=(p,q)=>[(p.x+q.x)/2,(p.y+q.y)/2];let s=m(pts[0],pts[1]);c.moveTo(s[0],s[1]);
+ for(let i=1;i<=n;i++){const p=pts[i%n],q=pts[(i+1)%n],e=m(p,q);c.quadraticCurveTo(p.x,p.y,e[0],e[1]);}c.closePath();}
+// isi satu bahan: tekstur -> bayangan bentuk (tepi kiri/kanan gelap) -> cahaya api dari bawah
+function paint(c,build,k,meters,L){c.beginPath();build();c.fillStyle=patOf(c,k,L.ox,L.oy,L.sc,meters);c.fill();c.fillStyle=L.form;c.fill();c.fillStyle=L.rim;c.fill();}
+function drawFarmer(c,B,W3,sc){
+ const t=S.t,lp=v3.lerp,P0=W3(B.P),hd=W3(B.head),ft=W3(B.legs[0].ank),heat=fireHeat(),fl=.85+.15*Math.sin(t*19)*Math.sin(t*7.7);
+ const form=c.createLinearGradient(P0.x-.36*sc,0,P0.x+.36*sc,0);form.addColorStop(0,'rgba(8,6,5,.62)');form.addColorStop(.3,'rgba(8,6,5,.12)');form.addColorStop(.62,'rgba(8,6,5,.05)');form.addColorStop(1,'rgba(8,6,5,.66)');
+ const rim=c.createLinearGradient(0,ft.y+.05*sc,0,hd.y);rim.addColorStop(0,`rgba(255,130,50,${clamp(.2+heat*.25)*fl})`);rim.addColorStop(.3,`rgba(220,90,40,${clamp(.05+heat*.1)*fl})`);rim.addColorStop(.6,'rgba(200,70,30,0)');rim.addColorStop(1,'rgba(200,70,30,0)');
+ const L={ox:P0.x,oy:P0.y,sc,form,rim};
+ const armFront=[],armBack=[];for(const ar of B.arms)(ar.hand[2]>B.chest[2]?armFront:armBack).push(ar);
+ const arm=ar=>{paint(c,()=>{limbP(c,W3(ar.sh),W3(ar.elb),.052*sc,.04*sc,1.12);limbP(c,W3(ar.elb),W3(ar.hand),.045*sc,.032*sc,1.1);},'skin',.3,L);const h=W3(ar.hand);paint(c,()=>c.ellipse(h.x,h.y,.042*sc,.05*sc,0,0,7),'skin',.3,L);
+  paint(c,()=>limbP(c,W3(ar.sh),W3(lp(ar.sh,ar.elb,.45)),.078*sc,.068*sc,1),'shirt',.5,L);};
+ // kaki: betis telanjang, celana digulung sampai bawah lutut, sandal jepit gelap
+ paint(c,()=>{for(const l of B.legs){limbP(c,W3(lp(l.knee,l.ank,.25)),W3(l.ank),.05*sc,.034*sc,1.2);}},'skin',.3,L);
+ c.fillStyle='#1a1512';c.beginPath();for(const l of B.legs)limbP(c,W3(l.ank),W3(l.toe),.044*sc,.034*sc,1);c.fill();
+ paint(c,()=>{for(const l of B.legs){limbP(c,W3(l.hip),W3(l.knee),.098*sc,.07*sc,1.08);limbP(c,W3(l.knee),W3(lp(l.knee,l.ank,.3)),.074*sc,.066*sc,1);}},'pants',.4,L);
+ armFront.forEach(arm);
+ // kaus lusuh, ujung bawah berkibar
+ const P=B.P,fk=i=>.03*Math.sin(t*13+i*1.9);
+ paint(c,()=>blobP(c,[v3.add(P,[-.18,-.06+fk(0),-.02]),v3.add(P,[0,-.08+fk(1),-.03]),v3.add(P,[.18,-.06+fk(2),-.02]),v3.add(P,[.16,.16,0]),
+  v3.add(B.shR,[-.01,-.11,0]),v3.add(B.shR,[.05,.02,0]),v3.add(B.neck,[.07,-.02,0]),v3.add(B.neck,[-.07,-.02,0]),v3.add(B.shL,[-.05,.02,0]),v3.add(B.shL,[.01,-.11,0]),v3.add(P,[-.16,.16,0])].map(W3)),'shirt',.5,L);
+ // sarung kotak-kotak dililit di pinggang, ujung simpul menjuntai
+ paint(c,()=>{blobP(c,[v3.add(P,[-.2,.1,-.04]),v3.add(P,[0,.12,-.06]),v3.add(P,[.2,.1,-.04]),v3.add(P,[.22,-.08,-.03]),v3.add(P,[.1,-.17+fk(3)*.6,-.05]),v3.add(P,[-.08,-.15+fk(4)*.6,-.05]),v3.add(P,[-.22,-.08,-.03])].map(W3));
+  limbP(c,W3(v3.add(P,[.12,.06,-.07])),W3(v3.add(P,[.16+fk(5),-.2,-.08])),.035*sc,.02*sc,1.2);},'sarung',.35,L);
+ // ambung rotan di punggung, memantul sedikit telat
+ const bb=Math.cos(S.ph*2-.7)*.03*(S.py>0.01?0:1),bk=v3.add(B.chest,[0,-.12+bb,-.19]);
+ c.strokeStyle='#2a1d14';c.lineWidth=Math.max(1,.03*sc);c.beginPath();for(const s of[B.shL,B.shR]){const a=W3(s),b=W3(v3.add(bk,[s[0]*.5,.2,.06]));c.moveTo(a.x,a.y);c.lineTo(b.x,b.y);}c.stroke();
+ const bq=[[-.13,.16],[.13,.16],[.1,-.18],[-.1,-.18]].map(q=>W3(v3.add(bk,[q[0],q[1],0])));
+ paint(c,()=>{c.moveTo(bq[0].x,bq[0].y);for(let i=1;i<4;i++)c.lineTo(bq[i].x,bq[i].y);c.closePath();},'weave',.12,L);
+ const rimL=W3(v3.add(bk,[-.13,.16,0])),rimR=W3(v3.add(bk,[.13,.16,0]));c.fillStyle='#3d2b19';c.beginPath();c.ellipse((rimL.x+rimR.x)/2,(rimL.y+rimR.y)/2,Math.abs(rimR.x-rimL.x)/2,.035*sc,0,0,7);c.fill();
+ armBack.forEach(arm);
+ // leher, tengkuk berambut, simpul masker
+ paint(c,()=>limbP(c,W3(B.chest),W3(B.head),.058*sc,.052*sc,1),'skin',.3,L);
+ c.fillStyle='#16110e';c.beginPath();c.ellipse(hd.x,hd.y-.02*sc,.1*sc,.11*sc,0,0,7);c.fill();
+ const kn=W3(v3.add(B.head,[0,-.03,-.1]));c.fillStyle='#4b4a42';c.beginPath();c.arc(kn.x,kn.y,.025*sc,0,7);c.fill();
+ // caping: kerucut anyaman bambu, dilihat dari belakang sedikit di bawah mata
+ const cy=B.head[1]+.07,tip=W3([B.head[0],cy+.13,B.head[2]+.01]),R=.27,N=14,ring=[];
+ for(let i=0;i<N;i++){const a=i/N*Math.PI*2;ring.push(W3([B.head[0]+Math.cos(a)*R,cy+Math.sin(t*1.7)*.004,B.head[2]+Math.sin(a)*R]));}
+ const lft=ring.reduce((a,b)=>b.x<a.x?b:a),rgt=ring.reduce((a,b)=>b.x>a.x?b:a);
+ paint(c,()=>{c.moveTo(ring[0].x,ring[0].y);for(const q of ring)c.lineTo(q.x,q.y);c.closePath();c.moveTo(lft.x,lft.y);c.lineTo(tip.x,tip.y);c.lineTo(rgt.x,rgt.y);c.closePath();},'weave',.1,L);
+ c.strokeStyle='rgba(60,40,18,.55)';c.lineWidth=Math.max(.6,.008*sc);c.beginPath();for(let i=0;i<N;i++){const q=ring[i];if(q.y<lft.y-1)continue;c.moveTo(tip.x,tip.y);c.lineTo(q.x,q.y);}c.stroke();
+ c.strokeStyle='rgba(40,26,12,.8)';c.lineWidth=Math.max(.8,.016*sc);c.beginPath();c.moveTo(ring[0].x,ring[0].y);for(const q of ring)c.lineTo(q.x,q.y);c.closePath();c.stroke();
+}
 function drawRunner(){
  const dying=mode==='dying'||mode==='over',B=bodyPose(),rx=(dying?S.dieLane:S.px)*LW;
  const d=dying?clamp(S.dieT/1.0):0,a=d*d*1.5,ca=Math.cos(a),sa=Math.sin(a);
@@ -649,7 +715,7 @@ function drawRunner(){
  if(!dying&&S.slide>0&&S.py<=0.01){const e=SLIDE_DUR-S.slide;ctx.fillStyle='rgba(196,186,160,.28)';
   for(let i=0;i<7;i++){const q=(i*.37+e*2.6)%1,dz=-q*.9,dx=Math.sin(i*2.3)*.18*(.4+q),pp=proj(rx+dx,.05+q*.12,dz);
    ctx.globalAlpha=(1-q)*.9;ctx.beginPath();ctx.ellipse(pp.x,pp.y,(.05+q*.16)*pp.s,(.03+q*.08)*pp.s,0,0,7);ctx.fill();}ctx.globalAlpha=1;}
- drawFigure(ctx,B,W3,BK*g.s,{col:'#0d0c0a',sackCol:'#2e251f',mask:true});
+ drawFarmer(ctx,B,W3,BK*g.s);
 }
 // sosok berdiri di kabut (K2): bentuk tubuh yang sama, tanpa cahaya api
 const STAND_POSE={P:[0,.92,0],chest:[0,1.42,.03],neck:[0,1.49,.03],shL:[-.23,1.42,.03],shR:[.23,1.42,.03],head:[0,1.64,.04],look:0,
