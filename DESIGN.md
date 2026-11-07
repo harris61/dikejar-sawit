@@ -31,7 +31,7 @@ Cara memberi masukan: tandai ID dengan ✅ pakai / ❌ buang / ✏️ ubah, atau
 | A1 | Pemain = warga yang kabur dari api, asap, dan ekspansi lahan | ✅ |
 | A2 | PT Sawit Juga Pohon: nama yang membela sawit sebagai "pohon" | ✅ |
 | A3 | Judul *Dikejar Asap* | ✅ |
-| A4 | Slogan perusahaan: *"Menanam Masa Depan"* | ✅ |
+| A4 | Slogan perusahaan: *"Sawit untuk masa depan yang ~~cerah~~ gelap berasap"* | ✅ |
 | A5 | Logo daun hijau yang ujungnya terbakar | ⏳ |
 
 ## B. Mekanik Inti
