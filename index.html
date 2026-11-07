@@ -505,8 +505,12 @@ function palmFire(x,y,s,amt,seed,fv){if(amt<=0||s<1.5)return;const t=S.t,fk=.8+.
   for(let i=0;i<6;i++){const w=.13*s*k*(1+((i*1.7+seed*9)%1)*.6),xx=x+(i-2.5)*.09*s*k,hh=.95*s*k*amt*(.55+.45*Math.abs(Math.sin(t*(7+i)+seed*20+i*1.3)));
    ctx.moveTo(xx-w,y);ctx.quadraticCurveTo(xx-w*.5,y-hh*.5,xx+Math.sin(t*5+i+seed*7)*w*.5,y-hh);ctx.quadraticCurveTo(xx+w*.5,y-hh*.5,xx+w,y);}ctx.fill();}
  ctx.globalAlpha=1;}
+// Hemat performa: asap hanya di pohon dekat; api penuh hanya di pohon dekat, yang jauh cukup satu lidah api sederhana
+const SMOKE_NEAR=22,FIRE_NEAR=14;
+function palmEmber(x,y,s,amt,seed,fv){if(amt<=0||s<1.5)return;const hh=.6*s*amt*(.7+.3*Math.abs(Math.sin(S.t*8+seed*20))),w=.14*s;
+ ctx.globalAlpha=fv*clamp(amt*1.4);ctx.fillStyle=C.red;ctx.beginPath();ctx.moveTo(x-w,y);ctx.quadraticCurveTo(x-w*.4,y-hh*.5,x+Math.sin(S.t*5+seed*7)*w*.4,y-hh);ctx.quadraticCurveTo(x+w*.4,y-hh*.5,x+w,y);ctx.fill();ctx.globalAlpha=1;}
 function palmSmoke(x,y,s,amt,seed,fv){if(amt<=0)return;const t=S.t,pc=puffOf(mixc(HZ,C.near,.55));
- for(let k=0;k<7;k++){const u=((t*.16+seed+k/7)%1),r=(.4+u*1.9)*s,xx=x+Math.sin(u*3+seed*9)*.3*s+u*u*.8*s,yy=y-u*3.2*s;
+ for(let k=0;k<3;k++){const u=((t*.16+seed+k/3)%1),r=(.4+u*1.9)*s,xx=x+Math.sin(u*3+seed*9)*.3*s+u*u*.8*s,yy=y-u*3.2*s;
   ctx.globalAlpha=fv*clamp(.35+amt*.6)*.85*Math.sin(u*Math.PI);ctx.drawImage(pc,xx-r,yy-r*.8,r*2,r*1.6);}
  ctx.globalAlpha=1;}
 function palmW(c,x,z,h,seed,col,dead,t){const b=proj(x,0,z),tp=proj(x+(seed-.5)*.3,h,z);c.fillStyle=col;c.strokeStyle=col;palmAt(c,b.x,b.y,tp.x,tp.y,b.s,seed,{dead,sway:Math.sin(t*1.3+seed*9)*.09*b.s});return{b,tp};}
@@ -596,9 +600,7 @@ function bodyPose(){
 // ---------- Siluet sinematik ----------
 // Tubuh digambar sebagai bentuk organik (otot, kain), lalu diberi cahaya api di tepi bawah
 // dan pendar oranye. Semua digambar di kanvas bantu seukuran kotak tubuh agar ringan di HP.
-const FIG={a:document.createElement('canvas'),b:document.createElement('canvas'),c:document.createElement('canvas')};FIG.ax=FIG.a.getContext('2d');FIG.bx=FIG.b.getContext('2d');FIG.cx=FIG.c.getContext('2d');
 // kanvas bantu hanya seukuran kotak tubuh; tumbuh bila perlu, tidak pernah diciutkan
-function figFit(w,h){for(const c of[FIG.a,FIG.b,FIG.c])if(c.width<w||c.height<h){c.width=Math.max(c.width,Math.ceil(w*1.25));c.height=Math.max(c.height,Math.ceil(h*1.25));}}
 // anggota tubuh: ujung membulat, bagian tengah menggembung (otot)
 function limb(c,A,B,ra,rb,bul=1.12){const dx=B.x-A.x,dy=B.y-A.y,L=Math.hypot(dx,dy)||1,nx=-dy/L,ny=dx/L,mx=(A.x+B.x)/2,my=(A.y+B.y)/2,rm=Math.max(ra,rb)*bul,an=Math.atan2(ny,nx);
  c.beginPath();c.moveTo(A.x+nx*ra,A.y+ny*ra);c.quadraticCurveTo(mx+nx*rm,my+ny*rm,B.x+nx*rb,B.y+ny*rb);c.arc(B.x,B.y,rb,an,an+Math.PI,true);
@@ -647,27 +649,7 @@ function drawRunner(){
  if(!dying&&S.slide>0&&S.py<=0.01){const e=SLIDE_DUR-S.slide;ctx.fillStyle='rgba(196,186,160,.28)';
   for(let i=0;i<7;i++){const q=(i*.37+e*2.6)%1,dz=-q*.9,dx=Math.sin(i*2.3)*.18*(.4+q),pp=proj(rx+dx,.05+q*.12,dz);
    ctx.globalAlpha=(1-q)*.9;ctx.beginPath();ctx.ellipse(pp.x,pp.y,(.05+q*.16)*pp.s,(.03+q*.08)*pp.s,0,0,7);ctx.fill();}ctx.globalAlpha=1;}
-  const sc=g.s*BK,Q=Math.min(DPR,1.5);
- // kotak tubuh dari sendi-sendi utama
- const J=[B.P,B.chest,B.head,v3.add(B.chest,[0,0,-.3])];for(const l of B.legs)J.push(l.hip,l.knee,l.ank,l.toe);for(const r of B.arms)J.push(r.sh,r.elb,r.hand);
- J.forEach(W3);const pad=.32*sc,rx0=Math.max(-20,x0-pad),ry0=Math.max(-20,y0-pad),rw=Math.min(W+20,x1+pad)-rx0,rh=Math.min(H+20,y1+pad)-ry0;if(rw<=0||rh<=0)return;
- const cw=Math.ceil(rw*Q),ch=Math.ceil(rh*Q);figFit(cw,ch);
- const bx=FIG.bx,ax=FIG.ax,cx=FIG.cx,I=c=>c.setTransform(1,0,0,1,0,0),src=[0,0,cw,ch];
- for(const c of[ax,bx,cx]){I(c);c.globalCompositeOperation='source-over';c.clearRect(0,0,cw+2,ch+2);}
- // 1) siluet ke B
- bx.setTransform(Q,0,0,Q,-rx0*Q,-ry0*Q);drawFigure(bx,B,W3,sc,{col:'#0d0c0a',sackCol:'#2e251f',mask:true});I(bx);
- // 2) siluet terkikis (C) = B dipotong salinannya ke 4 arah; selisihnya jadi garis cahaya tepi
- const k=Math.max(1,.024*sc*(.75+heat*.35))*Q;cx.drawImage(FIG.b,...src,0,0,cw,ch);cx.globalCompositeOperation='destination-in';
- for(const[ox,oy]of[[-k,0],[k,0],[0,-k],[0,k*.6]])cx.drawImage(FIG.b,...src,ox,oy,cw,ch);cx.globalCompositeOperation='source-over';
- ax.drawImage(FIG.b,...src,0,0,cw,ch);ax.globalCompositeOperation='source-atop';
- let gr=ax.createLinearGradient(0,0,0,ch);gr.addColorStop(0,'rgba(214,210,196,.5)');gr.addColorStop(.45,`rgba(236,128,62,${clamp(.55+heat*.35)*flick})`);gr.addColorStop(1,`rgba(255,104,36,${clamp(.75+heat*.25)*flick})`);
- ax.fillStyle=gr;ax.fillRect(0,0,cw,ch);ax.drawImage(FIG.c,...src,0,0,cw,ch);
- // punggung tersorot api dari belakang: hangat di bawah, memudar ke atas
- gr=ax.createLinearGradient(0,0,0,ch);gr.addColorStop(0,'rgba(120,40,16,0)');gr.addColorStop(1,`rgba(150,48,18,${clamp(.22+heat*.2)*flick})`);ax.fillStyle=gr;ax.fillRect(0,0,cw,ch);
- ax.globalCompositeOperation='source-over';
- // 3) tempel ke layar dengan pendar oranye
- ctx.save();ctx.shadowColor=`rgba(226,84,30,${clamp(.3+heat*.45)*flick})`;ctx.shadowBlur=Math.max(6,.12*sc)*DPR;ctx.shadowOffsetY=.03*sc*DPR;
- ctx.drawImage(FIG.a,...src,rx0,ry0,rw,rh);ctx.restore();
+ drawFigure(ctx,B,W3,BK*g.s,{col:'#0d0c0a',sackCol:'#2e251f',mask:true});
 }
 // sosok berdiri di kabut (K2): bentuk tubuh yang sama, tanpa cahaya api
 const STAND_POSE={P:[0,.92,0],chest:[0,1.42,.03],neck:[0,1.49,.03],shL:[-.23,1.42,.03],shR:[.23,1.42,.03],head:[0,1.64,.04],look:0,
@@ -800,18 +782,13 @@ function drawBaliho(d,z){const p0=proj(d.x,0,z),p1=proj(d.x,3.1,z),p2=proj(d.x,1
 
 // ================= Lapisan jauh (cache) =================
 const FAR_Z=[70,46,30];
-// Tanah: gradasi halus menurut kedalaman (bukan pita bertingkat). road = campuran ekstra ke warna kabut untuk jalur.
-function groundGrad(c,y0,road){const g=c.createLinearGradient(0,y0,0,H);g.addColorStop(0,rgb(mixc(HZ,HZ,0)));
- for(const z of[90,70,52,40,30,23,18,14,11,8,6,4.5,3.4]){const y=proj(0,0,z).y;if(y<=y0||y>=H)continue;
-  const near=.18*clamp((30-z)/12);let col=mixc(dcol(z),HZ,near);if(road)col=mixc(col,HZ,road);g.addColorStop((y-y0)/(H-y0),rgb(col));}
- let cb=mixc(dcol(3.4),HZ,.18);if(road)cb=mixc(cb,HZ,road);g.addColorStop(1,rgb(cb));return g;}
 let farCv=document.createElement('canvas'),farX=farCv.getContext('2d'),farKey='';
 const FAR_PALMS=(()=>{const a=[];let s=7;const r=()=>(s=(s*16807)%2147483647)/2147483647;for(const z of FAR_Z){const row=[];for(let x=-30;x<=30;x+=.75+r()*.9){if(Math.abs(x)<1.55*LW+.8)continue;row.push({x,z:z+r()*2,h:2.3+r()*1.4,seed:r()});}a.push(row);}return a;})();
 function buildFar(f){
  const key=[Math.round(f*60),Math.round(VIS),Math.round(S.rain>0?1:0),W,H].join();if(key===farKey)return;farKey=key;
  farCv.width=Math.round(W*DPR);farCv.height=Math.round(H*DPR);farX.setTransform(DPR,0,0,DPR,0,0);farX.clearRect(0,0,W,H);
- const y0=HOR-1;farX.fillStyle=groundGrad(farX,y0,0);farX.fillRect(0,y0,W,H-y0);
- farX.save();roadPath(farX);farX.clip();farX.fillStyle=groundGrad(farX,y0,.3);farX.fillRect(0,y0,W,H-y0);farX.restore();
+ const y0=HOR-1,gc=mixc(dcol(12),HZ,.18);farX.fillStyle=rgb(gc);farX.fillRect(0,y0,W,H-y0);
+ farX.save();roadPath(farX);farX.clip();farX.fillStyle=rgb(mixc(gc,HZ,.3));farX.fillRect(0,y0,W,H-y0);farX.restore();
  FAR_Z.forEach((z,i)=>{const col=rgb(dcol(z));
   farX.fillStyle=col;farX.strokeStyle=col;for(const pm of FAR_PALMS[i]){const b=proj(pm.x,0,pm.z),t=proj(pm.x+(pm.seed-.5)*.3,pm.h,pm.z);palmAt(farX,b.x,b.y,t.x,t.y,b.s,pm.seed,{n:10,dead:f>.7});}});
 }
@@ -888,8 +865,9 @@ function render(){
   else if(d.kind==='baliho')drawBaliho(d,z);
   else if(d.kind==='siluet'&&S.ispu>=300&&z>5)drawPerson(d.x,z,fv*.85);
   else{const share=.12+f*.55,burning=d.burn<share,dd=dead||d.burn<share*.6;const P=palmDraw(d,z,dd,fv);
-   if(burning&&z>1){const amt=clamp((share-d.burn)/share*1.6)*(1-ra*.6);palmSmoke(P.tp.x,P.tp.y,P.b.s,amt,d.seed,fv);
-    if(d.burn<share*.5)palmFire(P.tp.x,P.tp.y+.05*P.b.s,P.b.s,amt,d.seed,fv);if(d.burn<share*.75)palmFire(P.b.x,P.b.y,P.b.s*.7,amt*.8,d.seed+.3,fv);}}
+   if(burning&&z>1){const amt=clamp((share-d.burn)/share*1.6)*(1-ra*.6),near=z<FIRE_NEAR,fire=near?palmFire:palmEmber;
+    if(z<SMOKE_NEAR)palmSmoke(P.tp.x,P.tp.y,P.b.s,amt,d.seed,fv);
+    if(d.burn<share*.5)fire(P.tp.x,P.tp.y+.05*P.b.s,P.b.s,amt,d.seed,fv);if(d.burn<share*.75)fire(P.b.x,P.b.y,P.b.s*.7,amt*.8,d.seed+.3,fv);}}
  }
  if(!LOWQ)drawMist(f,ra,true);
  // hujan
