@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#0d0c0a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>Dikejar Sawit</title>
+<title>Dikejar Asap</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@100;300;800&family=Instrument+Serif:ital@0;1&family=Archivo+Narrow:wght@400;600&display=swap">
 <style>
@@ -114,7 +114,7 @@ canvas{display:block;width:100%;height:100%}
 
  <div id="start" class="ov">
   <div class="a">DIKEJAR</div>
-  <div class="b">SAWIT</div>
+  <div class="b">ASAP</div>
   <div class="c">Asap membunuhmu!</div>
   <div class="go">
    <button class="btn" id="btnStart">Mulai lari</button>
@@ -172,7 +172,7 @@ const lsSet=(k,v)=>{try{localStorage.setItem(k,v);}catch(e){}};
 const cv=$('c'),ctx=cv.getContext('2d');
 let W=0,H=0,HOR=0,FOC=0,DPR=1;
 const LW=0.8,CAMH=1.7,CAMZ=3.2;
-function resize(){const r=cv.getBoundingClientRect();DPR=Math.min(2,window.devicePixelRatio||1);W=r.width;H=r.height;cv.width=Math.round(W*DPR);cv.height=Math.round(H*DPR);ctx.setTransform(DPR,0,0,DPR,0,0);HOR=H*0.36;FOC=Math.min(W*1.3,H*0.8);farKey='';}
+function resize(){const r=cv.getBoundingClientRect();DPR=Math.min(2,window.devicePixelRatio||1);W=r.width;H=r.height;cv.width=Math.round(W*DPR);cv.height=Math.round(H*DPR);ctx.setTransform(DPR,0,0,DPR,0,0);HOR=H*0.36;FOC=Math.min(W*1.3,H*0.8);farKey='';if(window.FIRE_RESET)FIRE_RESET();}
 window.addEventListener('resize',resize);
 function proj(x,y,z){const s=FOC/(z+CAMZ);return{x:W/2+x*s,y:HOR+(CAMH-y)*s,s};}
 
@@ -889,7 +889,7 @@ function render(){
  if(ra>0){ctx.strokeStyle=`rgba(225,230,232,${.3*ra})`;ctx.lineWidth=1;ctx.beginPath();for(let i=0;i<110;i++){const x=(i*73.13+S.t*240)%W,y=(i*131.7+S.t*950)%H;ctx.moveTo(x,y);ctx.lineTo(x-5,y+16);}ctx.stroke();}
  // api pengejar: dua lapis lidah api datar
  const heat=dying&&S.cause==='api'?1.5:fireHeat();
- tongues(H*(.035+heat*.11),C.redDeep,14,9,1.1);tongues(H*(.02+heat*.065),C.red,19,3,1.7);
+ drawFire();
  // abu & bara
  for(const e of S.ash){ctx.save();ctx.translate(e.x,e.y);ctx.rotate(e.a);ctx.globalAlpha=e.ember?clamp(e.l):clamp(e.l/2)*.55;ctx.fillStyle=e.ember?C.red:'#0d0c0a';ctx.fillRect(-e.r,-e.r*.35,e.r*2,e.r*.7);ctx.restore();}
  ctx.globalAlpha=1;
@@ -899,7 +899,48 @@ function render(){
  if(dying){ctx.fillStyle=`rgba(13,12,10,${clamp(S.dieT/1.6)*.85})`;ctx.fillRect(-20,-20,W+40,H+40);}
  ctx.restore();
 }
-function tongues(ht,col,n,seed,spd){ctx.fillStyle=col;ctx.beginPath();for(let i=0;i<n;i++){const r1=Math.sin(i*12.9898+seed*78.233)*43758.5453%1,r=Math.abs(r1),x=(i+r*.6)/n*W,ww=W/n*(.9+r*.8),hh=ht*(.5+.5*Math.abs(Math.sin(S.t*spd*3+i*1.7+seed))),lean=Math.sin(S.t*spd*2+i)*ww*.35;ctx.moveTo(x-ww,H+3);ctx.quadraticCurveTo(x-ww*.55,H-hh*.45,x+lean,H-hh);ctx.quadraticCurveTo(x+ww*.55,H-hh*.45,x+ww,H+3);ctx.closePath();}ctx.fill();}
+// ---------- Api pengejar: partikel lidah api, dasar bara, asap, percikan ----------
+// sprite lidah api: tetes memanjang dengan inti kuning-putih, oranye, lalu merah transparan
+const FLAME=(()=>{const c=document.createElement('canvas');c.width=48;c.height=160;const g=c.getContext('2d');
+ g.save();g.translate(24,128);g.scale(1,4.2);const gr=g.createRadialGradient(0,0,0,0,0,24);
+ gr.addColorStop(0,'rgba(255,232,170,1)');gr.addColorStop(.28,'rgba(255,164,62,.9)');gr.addColorStop(.62,'rgba(222,72,22,.4)');gr.addColorStop(1,'rgba(150,26,12,0)');
+ g.fillStyle=gr;g.fillRect(-24,-40,48,80);g.restore();
+ // meruncing ke atas seperti lidah api
+ g.globalCompositeOperation='destination-in';g.beginPath();g.moveTo(24,0);g.bezierCurveTo(30,50,46,96,44,128);g.quadraticCurveTo(44,158,24,158);g.quadraticCurveTo(4,158,4,128);g.bezierCurveTo(2,96,18,50,24,0);g.fill();
+ return c;})();
+const FIRE={p:[],sp:[],sm:[],acc:0};
+window.FIRE_RESET=()=>{FIRE.p.length=0;FIRE.sp.length=0;FIRE.sm.length=0;};
+function fireH(){return(mode==='dying'||mode==='over')&&S.cause==='api'?1.5:fireHeat();}
+function updFire(dt){const heat=fireH(),n=LOWQ?.55:1;
+ FIRE.acc+=dt*(W/3.2)*(1+heat*1.6)*n;
+ while(FIRE.acc>1){FIRE.acc--;const life=rand(.35,.7),sz=H*rand(.05,.1)*(.65+heat*.55);FIRE.p.push({x:rand(-20,W+20),y:H+sz*.25,vx:rand(-10,10),vy:-H*rand(.008,.025)*(.6+heat*.6),life,l:life,sz,ph:Math.random()*7});}
+ for(const f of FIRE.p){f.l-=dt;f.ph+=dt*9;f.x+=(f.vx+Math.sin(f.ph)*28)*dt;f.y+=f.vy*dt;f.vy*=1-dt*.6;}
+ FIRE.p=FIRE.p.filter(f=>f.l>0);
+ if(Math.random()<dt*(6+heat*22)*n)FIRE.sp.push({x:rand(W),y:H-rand(H*.02,H*.08),vx:rand(-30,30),vy:-rand(H*.25,H*.55),l:rand(.5,1.2)});
+ for(const s of FIRE.sp){s.l-=dt;s.x+=s.vx*dt;s.y+=s.vy*dt;s.vy+=H*.18*dt;}FIRE.sp=FIRE.sp.filter(s=>s.l>0);
+ if(Math.random()<dt*(3+heat*7)*n)FIRE.sm.push({x:rand(-20,W+20),y:H-H*(.06+heat*.08),r:H*rand(.05,.09),vy:-H*rand(.05,.1),l:rand(1.6,2.6),m:0});
+ for(const s of FIRE.sm){s.l-=dt;s.m+=dt;s.y+=s.vy*dt;s.r+=H*.05*dt;s.x+=Math.sin(s.m*1.3+s.r)*8*dt;}FIRE.sm=FIRE.sm.filter(s=>s.l>0);
+}
+function drawFire(){const heat=fireH(),fk=.85+.15*Math.sin(S.t*17)*Math.sin(S.t*6.1),top=H*(.06+heat*.17);
+ // asap gelap di atas api
+ const pc=puffOf(mixc(C.near,HZ,.12));for(const s of FIRE.sm){ctx.globalAlpha=clamp(s.l*.5)*clamp(s.m*2)*.55;ctx.drawImage(pc,s.x-s.r,s.y-s.r,s.r*2,s.r*2);}ctx.globalAlpha=1;
+ // tanah hangus di belakang api: gelap supaya nyala api terbaca
+ {const gd=ctx.createLinearGradient(0,H,0,H-top*1.8);gd.addColorStop(0,'rgba(13,12,10,.85)');gd.addColorStop(1,'rgba(13,12,10,0)');ctx.fillStyle=gd;ctx.fillRect(-20,H-top*1.8,W+40,top*1.8+20);}
+ // pendar panas naik dari bawah
+ let g=ctx.createLinearGradient(0,H,0,H-top*2.2);g.addColorStop(0,`rgba(214,70,22,${clamp(.38+heat*.3)*fk})`);g.addColorStop(.45,`rgba(160,40,16,${clamp(.14+heat*.14)*fk})`);g.addColorStop(1,'rgba(120,24,10,0)');
+ ctx.fillStyle=g;ctx.fillRect(-20,H-top*2.2,W+40,top*2.2+20);
+ // dasar bara membara: pita merah tua bergelombang dengan titik panas yang berdenyut
+ ctx.fillStyle=C.redDeep;ctx.beginPath();ctx.moveTo(-20,H+4);for(let x=-20;x<=W+20;x+=W/24){const h=H*(.012+heat*.012)*(1+.5*Math.sin(x*.05+S.t*3)+.3*Math.sin(x*.13-S.t*5));ctx.lineTo(x,H-h);}ctx.lineTo(W+20,H+4);ctx.closePath();ctx.fill();
+ // lidah api (cahaya saling menambah)
+ ctx.save();ctx.globalCompositeOperation='lighter';
+ for(const f of FIRE.p){const u=1-f.l/f.life,sc=(.55+.45*Math.sin(Math.min(1,u*2.2+.2)*Math.PI*.5))*(1-u*.6),w=f.sz*sc*.75,h=w*3.3;
+  ctx.globalAlpha=clamp((1-u)*1.4)*.5*fk;ctx.save();ctx.translate(f.x,f.y);ctx.rotate(Math.sin(f.ph)*.12+f.vx*.004);ctx.drawImage(FLAME,-w/2,-h*.86,w,h);ctx.restore();}
+ ctx.globalAlpha=fk;g=ctx.createLinearGradient(0,H,0,H-H*(.045+heat*.03));g.addColorStop(0,'rgba(255,190,90,.75)');g.addColorStop(.5,'rgba(240,110,36,.35)');g.addColorStop(1,'rgba(200,60,20,0)');
+ ctx.fillStyle=g;ctx.fillRect(-20,H-H*(.045+heat*.03),W+40,H*(.045+heat*.03)+20);
+ // percikan bara
+ ctx.fillStyle='#ffc070';for(const s of FIRE.sp){ctx.globalAlpha=clamp(s.l*1.5);ctx.fillRect(s.x,s.y,1.6,1.6);}
+ ctx.restore();ctx.globalAlpha=1;
+}
 
 // ================= Layar hasil: abu & bara melayang =================
 const OFX={cv:null,cx:null,p:[],w:0,h:0};
@@ -929,7 +970,7 @@ function frame(ts){
  if(mode==='play')update(dt);
  else if(mode==='dying'){S.dieT+=dt;S.shake=Math.max(0,S.shake-dt);S.fire=Math.min(1.4,S.fire+dt);updAsh(dt);if(S.dieT>1.6)showOver();}
  else if(mode==='menu'||mode==='over'){S.t+=dt;S.dist+=dt*3;S.ph+=dt*2;updAsh(dt);recycleDecor();if(mode==='over')overFx(dt);}
- if(mode!=='paused'){aUpdate(dt,mode==='play');render();}
+ if(mode!=='paused'){updFire(dt);aUpdate(dt,mode==='play');render();}
  requestAnimationFrame(frame);
 }
 resize();reset();S.ispu=210; // menu: kabut sudah pekat

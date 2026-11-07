@@ -1,4 +1,4 @@
-# DIKEJAR SAWIT: Dokumen Desain
+# DIKEJAR ASAP: Dokumen Desain
 
 > Endless runner satire gelap + horor atmosferik tentang sawit dan karhutla di Indonesia.
 > Pemain mengendalikan **korban**. Dunia di sekitarnya berbicara dengan **suara korporat dan pejabat**.
@@ -12,7 +12,7 @@ Cara memberi masukan: tandai ID dengan ✅ pakai / ❌ buang / ✏️ ubah, atau
 
 | Aspek | Keputusan |
 |---|---|
-| Judul | **Dikejar Sawit** |
+| Judul | **Dikejar Asap** |
 | Sudut pandang | Korban: warga desa (v0.1), lalu anak sekolah, petani kecil, orangutan |
 | Suara satire | Korporat dan pejabat lewat ticker, notifikasi, baliho, layar game over |
 | Nada | Satire gelap + horor atmosferik. Horor penuh hanya di ISPU "Berbahaya" |
@@ -30,7 +30,7 @@ Cara memberi masukan: tandai ID dengan ✅ pakai / ❌ buang / ✏️ ubah, atau
 |---|---|---|
 | A1 | Pemain = warga yang kabur dari api, asap, dan ekspansi lahan | ✅ |
 | A2 | PT Sawit Juga Pohon: nama yang membela sawit sebagai "pohon" | ✅ |
-| A3 | Judul *Dikejar Sawit* | ✅ |
+| A3 | Judul *Dikejar Asap* | ✅ |
 | A4 | Slogan perusahaan: *"Menanam Masa Depan"* | ✅ |
 | A5 | Logo daun hijau yang ujungnya terbakar | ⏳ |
 
